@@ -9,6 +9,7 @@ import SignUp from "./pages/auth/signUp";
 import { useTypedSelector } from "./hooks/useTypedSelector";
 import Profile from "./pages/profile";
 import UserUpdare from "./pages/updateUser";
+import ConfirmEmail from "./pages/auth/confirmEmail";
 
 
 const App: React.FC = () => {
@@ -38,7 +39,7 @@ const App: React.FC = () => {
       <Route path="/" element={<SignIn />} />
       <Route path="/dashboard/" element={<SignIn />} />
       <Route path="*" element={<NotFound />} />
-   
+      <Route path="/confirmEmail/" element={<ConfirmEmail />} />
     </Routes>
   );
 };

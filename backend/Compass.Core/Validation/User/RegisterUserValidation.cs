@@ -17,7 +17,7 @@ namespace Compass.Core.Validation.User
             RuleFor(r => r.Email).NotEmpty().EmailAddress();
             RuleFor(r => r.Password).NotEmpty().MinimumLength(6);
             RuleFor(r => r.ConfirmPassword).NotEmpty().MinimumLength(6);
-            RuleFor(r => r.ConfirmPassword).Equal(x => x.Password);
+            RuleFor(r => r.ConfirmPassword).Equal(x => x.Password);        
             RuleFor(r => r.Role).NotEmpty();
         }
     }

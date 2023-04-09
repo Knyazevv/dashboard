@@ -70,7 +70,7 @@ const UserUpdare: React.FC = () => {
     const email = data.get("email");
     const phone = data.get("phone");
     const role = data.get("role");
-
+    
     const updatedUser = {
       Name: name,
       Surname: surname,
