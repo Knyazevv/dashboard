@@ -2,6 +2,8 @@ import { Dispatch } from "redux";
 import { UserActionType, UserActions } from "../../reducers/userReducers/types";
 import {
   changePassword,
+  Delete,
+  Edit,
   GetAll,
   Incert,
   Login,
@@ -170,18 +172,55 @@ export const UpdateProfile = (user: any) => {
   }
   };
 
-
   export const UpdateUser = (user: any) => {
     return async (dispatch: Dispatch<UserActions>) => {
       try {
         dispatch({ type: UserActionType.START_REQUEST });
         const data = await updateUser(user);
         const { response } = data;
-        console.log("response ", response);
-     
+        // console.log("response ", response);
+        if (response.success) {
+          localStorage.removeItem("selectedUser");
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+        dispatch({
+          type: UserActionType.FINISH_REQUEST,
+          payload: response.message,
+        });
       } catch {}
-    }
     };
+  };
+
+
+  export const DeleteUser = (email: string) => {
+    return async (dispatch: Dispatch<UserActions>) => {
+      try {
+        dispatch({ type: UserActionType.START_REQUEST });
+        const data = await Delete(email);
+        const { response } = data;
+  
+        if (response.success) {
+          localStorage.removeItem("selectedUser");
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+        dispatch({
+          type: UserActionType.FINISH_REQUEST,
+          payload: response.message,
+        });
+      } catch {}
+    };
+  };
+
+
+
+
+
+
+
 
     export const SelectdUser = (user: any) => {
       return async (dispatch: Dispatch<UserActions>) => {

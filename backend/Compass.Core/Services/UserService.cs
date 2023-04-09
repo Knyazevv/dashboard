@@ -165,10 +165,10 @@ namespace Compass.Core.Services
         public async Task<ServiceResponse> GetAllUsersAsync()
         {
             List<AppUser> users = await _userManager.Users.ToListAsync();
-            List<GetUsersDto> mappedUsers = users.Select(u => _mapper.Map<AppUser, GetUsersDto>(u)).ToList();
+            List<AllUsersDto> mappedUsers = users.Select(u => _mapper.Map<AppUser, AllUsersDto>(u)).ToList();
             for (int i = 0; i < users.Count; i++)
             {
-                mappedUsers[i].Role = (await _userManager.GetRolesAsync(users[i])).First();
+                mappedUsers[i].Role = (await _userManager.GetRolesAsync(users[i])).FirstOrDefault();
             }
 
             return new ServiceResponse
@@ -178,7 +178,6 @@ namespace Compass.Core.Services
                 Payload = mappedUsers
             };
         }
-
 
 
 

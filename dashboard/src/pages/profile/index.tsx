@@ -15,7 +15,6 @@ import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { ChangePasswordSchema, ChangeProfileSchema } from "../auth/validation";
 import { useNavigate } from "react-router-dom";
 
-
 const changePasswordValues = {
   oldPassword: "",
   currentPassword: "",
@@ -34,7 +33,6 @@ const Profile: React.FC<any> = () => {
   const { ChangePassword, UpdateProfile } = useActions();
   const { message } = useTypedSelector((store) => store.UserReducer);
   const navigate = useNavigate();
-
 
   changeProfileValues.name = user.Name;
   changeProfileValues.surname = user.Surname;
@@ -58,31 +56,29 @@ const Profile: React.FC<any> = () => {
     ChangePassword(updatedPassword);
   };
 
-
-
   const changeProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    
+
     const data = new FormData(event.currentTarget);
-    const name = data.get("firstName");
-    const surname = data.get("lastName");
+    const name = data.get("name");
+    const surname = data.get("surname");
     const email = data.get("email");
     const phone = data.get("phone");
 
     const updatedUser = {
       Id: user.Id,
-      name,
-      surname,
-      email,
-      phone,
+      Name: name,
+      Surname: surname,
+      PhoneNumber: phone,
+      Email: email,
     };
+    console.log(updatedUser);
     UpdateProfile(updatedUser);
   };
 
   if (message === "Profile updated!" || message === "Password changed.") {
     navigate("/dashboard");
   }
-
 
   return (
     <>

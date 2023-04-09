@@ -14,8 +14,10 @@ namespace Compass.Core.AutoMapper
         public AutoMapperUserProfile()
         {
             CreateMap<AppUser, RegisterUserDto>();
-            CreateMap<RegisterUserDto, AppUser>().ForMember(dst => dst.UserName, act => act.MapFrom(src => src.Email));
             CreateMap<AppUser, AllUsersDto>();
+            CreateMap<AppUser, GetUsersDto>();
+            CreateMap<RegisterUserDto, AppUser>().ForMember(dst => dst.UserName, act => act.MapFrom(src => src.Email));
+            CreateMap<UpdateUserDto, AppUser>();
         }
     }
 }

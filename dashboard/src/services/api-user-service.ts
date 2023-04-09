@@ -112,8 +112,9 @@ const User = {
   GetAll: () => request.get("/getall"),
   ChangePassword: (user: any) => request.post(`/changePassword`, user),
   UpdateProfile: (user: any) => request.post(`/updateProfile`, user),
-  Update: (user: any) => request.post("/update", user),
-
+  Update: (user: any) => request.post("/updateUser", user),
+  Edit: (user: any) => request.post("/edituser", user),
+  Delete: (email: string) => request.post("/deleteUser", email),
 };
 
 export async function Incert(user: any) {
@@ -201,6 +202,37 @@ export async function updateUser(user: any) {
     });
   return data;
 }
+
+export async function Edit(user: any) {
+  const data = await User.Edit(user)
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
+
+
+export async function Delete(email: string) {
+  const data = await User.Delete(email)
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
+
+
+
+
+
+
+
+
 
 export function setSelectedUser(user: any) {
   user = JSON.stringify(user);

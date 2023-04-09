@@ -21,6 +21,7 @@ import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { ChangeProfileSchema } from "../auth/validation";
 import { green, pink, red } from "@mui/material/colors";
+import { Navigate } from "react-router-dom";
 
 const initialProfileValues = {
   name: "",
@@ -31,18 +32,23 @@ const initialProfileValues = {
 };
 
 const UserUpdare: React.FC = () => {
+  
+   const [block, setBlock] = React.useState(true);
+  const { UpdateUser,  DeleteUser} = useActions();
+  
 
-  const [block, setBlock] = React.useState(true);
-
-
-  // const { selectedUser } = useTypedSelector((store) => store.UserReducer);
-  const { UpdateUser } = useActions();
   let su = localStorage.getItem("selectedUser");
   if (su == null) {
-    return <Box></Box>;
+    return <Navigate to="/dashboard/users"></Navigate>;
   }
+
   let selectedUser = JSON.parse(su);
 
+ 
+
+
+
+  
   initialProfileValues.name = selectedUser.name;
   initialProfileValues.surname = selectedUser.surname;
   initialProfileValues.email = selectedUser.email;
@@ -66,12 +72,11 @@ const UserUpdare: React.FC = () => {
     const role = data.get("role");
 
     const updatedUser = {
-      id: selectedUser.id,
-      name,
-      surname,
-      email,
-      phone,
-      role,
+      Name: name,
+      Surname: surname,
+      PhoneNumber: phone,
+      Email: email,
+      Role: role,
     };
     UpdateUser(updatedUser);
   };
@@ -221,6 +226,9 @@ const UserUpdare: React.FC = () => {
                     <Grid item md={6} xs={12}>
 
                       <Button
+                        onClick={() => {
+                          DeleteUser(selectedUser.email);
+                        }}
                        variant="contained"
                         color="error"
                         >

@@ -84,22 +84,22 @@ namespace Compass.Api.Controllers
             }
         }
 
-        //[HttpPost("users")]
-        //public async Task<IActionResult> GetUsersAsync()
-        //{
-        //    var result = await _userService.GetAllUsersAsync();
+        [HttpGet("getall")]
+        public async Task<IActionResult> GetAll()
+        {
+            var result = await _userService.GetAllUsersAsync();
+            if (result.Success)
+            {
 
-        //    if (result.Success)
-        //    {
-        //        return Ok(result);
-        //    }
-        //    return BadRequest(result);
-        //}
+                return Ok(result);
+            }
+            return BadRequest(result);
+
+        }
 
 
 
-
-        [HttpPost("updateUser")]
+        [HttpPost("updateProfile")]
         public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto model)
         {
             var validator = new UpdateProfileValidation();
@@ -121,7 +121,7 @@ namespace Compass.Api.Controllers
 
 
 
-        [HttpPost("EditUser")]
+        [HttpPost("updateUser")]
         public async Task<IActionResult> EditUserAsync([FromBody] EditUserDto model)
         {
             var validator = new EditUserValidation();
@@ -139,25 +139,25 @@ namespace Compass.Api.Controllers
             return BadRequest(validatinResult.Errors);
         }
 
-        //[HttpPost("ChangePassword")]
-        //public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordDto model)
-        //{
-        //    var validator = new ChangePasswordValidation();
-        //    var validatinResult = await validator.ValidateAsync(model);
-        //    if (validatinResult.IsValid)
-        //    {
-        //        var result = await _userService.ChangePasswordAsync(model);
+        [HttpPost("ChangePassword")]
+        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordDto model)
+        {
+            var validator = new ChangePasswordValidation();
+            var validatinResult = await validator.ValidateAsync(model);
+            if (validatinResult.IsValid)
+            {
+                var result = await _userService.ChangePasswordAsync(model);
 
-        //        if (result.Success)
-        //        {
-        //            return Ok(result);
-        //        }
-        //        return BadRequest(result);
-        //    }
-        //    return BadRequest(validatinResult.Errors);
-        //}
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            return BadRequest(validatinResult.Errors);
+        }
 
-        [HttpPost("DeleteUser")]
+        [HttpPost("deleteUser")]
         public async Task<IActionResult> DeleteUserAsync([FromBody] string email)
         {
             var result = await _userService.DeleteUserAsync(email);
