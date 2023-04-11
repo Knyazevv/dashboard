@@ -98,8 +98,8 @@ const UserUpdare: React.FC = () => {
               sx={{ mt: 1 }}
             >
               <CardHeader
-                title="Updating user data"
-                subheader={"User information"}
+                title="Updating user"
+                // subheader={"User information"}
               ></CardHeader>
               <CardContent>
                 <Grid container spacing={3}>

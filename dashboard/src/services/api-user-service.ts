@@ -117,6 +117,7 @@ const User = {
   Delete: (email: string) => request.post("/deleteUser", email),
   GetProfile: (id: string) => request.get("/profile?userId=" + id),
   Confirm: (emailData: any) => request.post("/confirmemail", emailData),
+  GetUsers: () => request.post("/users"),
 };
 
 export async function Incert(user: any) {
@@ -144,6 +145,16 @@ export async function Confirm(emailData: any) {
 }
 
 
+export async function GetUsers() {
+  const data = await User.GetUsers()
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
 
 
 

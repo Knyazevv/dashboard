@@ -220,21 +220,7 @@ export const UpdateProfile = (user: any) => {
     };
   };
 
-  export const GetUserProfile = (id: string) => {
-    return async (dispatch: Dispatch<UserActions>) => {
-      try {
-        dispatch({ type: UserActionType.START_REQUEST });
-        const data = await GetProfile(id);
-        const { response } = data;
-        if (response.success) {
-          dispatch({
-            type: UserActionType.USER_PROFILE_LOADED,
-            payload: response.payload,
-          });
-        }
-      } catch {}
-    }
-  };
+ 
 
 
   export const ConfirmUserEmail = (emailData: any) => {
@@ -264,7 +250,22 @@ export const UpdateProfile = (user: any) => {
     };
   };
 
-
+  export const GetUserProfile = (id: string) => {
+    return async (dispatch: Dispatch<UserActions>) => {
+      try {
+        dispatch({ type: UserActionType.START_REQUEST });
+        const data = await GetProfile(id);
+        const { response } = data;
+        if (response.success) {
+          dispatch({
+            type: UserActionType.USER_PROFILE_LOADED,
+            payload: response.payload,
+          });
+        }
+      } catch {}
+    };
+  };
+  
 
 
     export const SelectdUser = (user: any) => {

@@ -16,6 +16,8 @@ const UserReducer = (state = initialState, action: UserActions): UserState => {
       return { ...state, loading: true };
     case UserActionType.ALL_USERS_LOADED:
       return { ...state, loading: false, allUsers: action.payload.payload };
+      case UserActionType.USER_PROFILE_LOADED:
+        return { ...state, loading: false, profile: action.payload, message: "" };
     case UserActionType.FINISH_REQUEST:
       return { ...state, loading: false, message: action.payload };
     case UserActionType.LOGIN_USER_SUCCESS:
