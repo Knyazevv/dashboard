@@ -26,10 +26,10 @@ import jwtDecode from "jwt-decode";
 
 
 export const BlockUser = (email: string) => {
-  console.log(email);
+ 
   return async (dispatch: Dispatch<UserActions>) => {
     try {
-      console.log(email);
+      
       dispatch({ type: UserActionType.START_REQUEST });
       const data = await Block(email);
       const { response } = data;
@@ -295,4 +295,3 @@ export const UpdateProfile = (user: any) => {
 
 
    
-  

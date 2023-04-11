@@ -19,17 +19,17 @@ namespace Compass.Core.Services
         private readonly JwtService _jwtService;
         private readonly SignInManager<AppUser> _signInManager;
         private readonly IMapper _mapper;
-        private readonly EmailService _emailService;
         private readonly IConfiguration _configuration;
+        private readonly EmailService _emailService;
 
-        public UserService(IConfiguration configuration, EmailService emailService, JwtService jwtService, UserManager<AppUser> userManager, IMapper mapper, SignInManager<AppUser> signInManager)
+        public UserService(JwtService jwtService, UserManager<AppUser> userManager, IMapper mapper, SignInManager<AppUser> signInManager, IConfiguration configuration, EmailService emailService)
         {
             _userManager = userManager;
             _mapper = mapper;
             _signInManager = signInManager;
             _jwtService = jwtService;
-            _emailService = emailService;
             _configuration = configuration;
+            _emailService = emailService;
         }
 
 
@@ -165,7 +165,7 @@ namespace Compass.Core.Services
         public async Task<ServiceResponse> GetAllUsersAsync()
         {
             List<AppUser> users = await _userManager.Users.ToListAsync();
-            List<AllUsersDto> mappedUsers = users.Select(u => _mapper.Map<AppUser, AllUsersDto>(u)).ToList();
+            List<GetUsersDto> mappedUsers = users.Select(u => _mapper.Map<AppUser, GetUsersDto>(u)).ToList();
             for (int i = 0; i < users.Count; i++)
             {
                 mappedUsers[i].Role = (await _userManager.GetRolesAsync(users[i])).FirstOrDefault();
@@ -269,15 +269,7 @@ namespace Compass.Core.Services
                 };
             }
 
-            //var checkPassword = await _userManager.CheckPasswordAsync(user, model.Password);
-            //if (checkPassword == false)
-            //{
-            //    return new ServiceResponse
-            //    {
-            //        Success = false,
-            //        Message = "Incorrect password."
-            //    };
-            //}
+         
 
             user.Name = model.Name;
             user.Surname = model.Surname;

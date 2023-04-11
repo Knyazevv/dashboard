@@ -17,15 +17,12 @@ import IconButton from "@mui/material/IconButton";
 import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
-import FilterListIcon from "@mui/icons-material/FilterList";
 import { visuallyHidden } from "@mui/utils";
 import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Button from "@mui/material/Button";
-import { useDispatch } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
-import userEvent from "@testing-library/user-event";
+
 
 interface Data {
   id: number;
@@ -34,6 +31,7 @@ interface Data {
   email: string;
   phoneNumber: string;
   role: string;
+  isBlocked: boolean;
 }
 
 function createData(
@@ -42,7 +40,8 @@ function createData(
   surname: string,
   email: string,
   phoneNumber: string,
-  role: string
+  role: string,
+  isBlocked: boolean
 ): Data {
   return {
     id,
@@ -51,6 +50,7 @@ function createData(
     email,
     phoneNumber,
     role,
+    isBlocked,
   };
 }
 
@@ -130,6 +130,12 @@ const headCells: readonly HeadCell[] = [
     numeric: true,
     disablePadding: false,
     label: "Role",
+  },
+  {
+    id: "isBlocked",
+    numeric: true,
+    disablePadding: false,
+    label: "Is Blocked",
   },
 ];
 
@@ -299,15 +305,19 @@ const Users: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const navigate = useNavigate();
+
+
+
+
   const { GetAllUsers } = useActions();
   const { allUsers } = useTypedSelector((store) => store.UserReducer);
-  let rows: any[] = allUsers;
-  
-
+  const navigate = useNavigate();
   const { user } = useTypedSelector((store) => store.UserReducer);
   const { selectedUser } = useTypedSelector((store) => store.UserReducer);
-  const dispatch = useDispatch();
+
+  
+
+
 
   useEffect(() => {
     GetAllUsers();
@@ -429,6 +439,9 @@ const Users: React.FC = () => {
                       <TableCell align="right">{row.email}</TableCell>
                       <TableCell align="right">{row.phoneNumber}</TableCell>
                       <TableCell align="right">{row.role}</TableCell>
+                      <TableCell align="right">
+                        {row.isBlocked ? "Yes" : "No"}
+                      </TableCell>
                       {user.role === "Administrators" ? (
                         <TableCell align="right">
                           <Button
