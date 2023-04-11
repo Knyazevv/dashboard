@@ -14,7 +14,7 @@ import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { ChangePasswordSchema, ChangeProfileSchema } from "../auth/validation";
 import { useNavigate } from "react-router-dom";
-import { changePassword } from "../../services/api-user-service";
+
 
 const changePasswordValues = {
   oldPassword: "",
@@ -37,6 +37,7 @@ const Profile: React.FC<any> = () => {
   const { ChangeUserPassword, UpdateProfile } = useActions();
   const navigate = useNavigate();
   const [changePassword, setChangePassword] = React.useState(false);
+
 
   
   changeProfileValues.name = user.Name;
