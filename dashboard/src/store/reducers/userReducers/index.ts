@@ -6,6 +6,7 @@ const initialState: UserState = {
   message: "",
   isAuth: false,
   user: {},
+  profile: {},
   selectedUser: null,
 };
 const UserReducer = (state = initialState, action: UserActions): UserState => {
@@ -32,6 +33,7 @@ const UserReducer = (state = initialState, action: UserActions): UserState => {
         message: "",
         isAuth: false,
         user: {},
+        profile: {},
         selectedUser: null,
       };
     default:

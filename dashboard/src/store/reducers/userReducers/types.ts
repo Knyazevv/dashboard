@@ -5,6 +5,7 @@ export interface UserState {
   isAuth: boolean;
   selectedUser: any;
   user: any;
+  profile: any;
 }
 
 export enum UserActionType {
@@ -14,12 +15,21 @@ export enum UserActionType {
   LOGIN_USER_SUCCESS = "LOGIN_USER_SUCCESS",
   LOGOUT_USER = "LOGOUT_USER",
   SELECTED_USER = "SELECTED_USER",
+  USER_PROFILE_LOADED = "USER_PROFILE_LOADED",
+  PROFILE_UPDATED = "PROFILE_UPDATED"
 }
 
 interface SelectUserAction {
   type: UserActionType.SELECTED_USER;
   payload: any;
 }
+
+interface UserProfileLoadedAction {
+  type: UserActionType.USER_PROFILE_LOADED;
+  payload: any;
+}
+
+
 
 
 interface LoginUserSuccessAction {
@@ -40,6 +50,11 @@ interface FinishRequestAction {
   payload: any;
 }
 
+interface UserEditedAction {
+  type: UserActionType.PROFILE_UPDATED;
+  payload: any;
+}
+
 interface AllUsersLoadedAction {
   type: UserActionType.ALL_USERS_LOADED;
   payload: any;
@@ -51,4 +66,6 @@ export type UserActions =
   | FinishRequestAction
   | StartRequestAction
   | SelectUserAction
+  | UserProfileLoadedAction
+  | UserEditedAction
   | AllUsersLoadedAction;

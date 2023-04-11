@@ -115,6 +115,8 @@ const User = {
   Update: (user: any) => request.post("/updateUser", user),
   Edit: (user: any) => request.post("/edituser", user),
   Delete: (email: string) => request.post("/deleteUser", email),
+  GetProfile: (id: string) => request.get("/profile?userId=" + id),
+  Confirm: (emailData: any) => request.post("/confirmemail", emailData),
 };
 
 export async function Incert(user: any) {
@@ -127,6 +129,28 @@ export async function Incert(user: any) {
     });
   return data;
 }
+
+
+export async function Confirm(emailData: any) {
+  const data = await User.Confirm(emailData)
+    .then((response) => {
+      console.log(response);
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
+
+
+
+
+
+
+
+
+
 
 export async function Login(user: any) {
   const data = await User.Login(user)
@@ -227,7 +251,16 @@ export async function Delete(email: string) {
 }
 
 
-
+export async function GetProfile(id: string) {
+  const data = await User.GetProfile(id)
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
 
 
 

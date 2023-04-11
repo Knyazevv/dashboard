@@ -2,12 +2,12 @@
 using Compass.Core.Services;
 using Compass.Core.Validation.Token;
 using Compass.Core.Validation.User;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
+
 
 namespace Compass.Api.Controllers
 {
@@ -139,7 +139,7 @@ namespace Compass.Api.Controllers
             return BadRequest(validatinResult.Errors);
         }
 
-        [HttpPost("ChangePassword")]
+        [HttpPost("changePassword")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordDto model)
         {
             var validator = new ChangePasswordValidation();
@@ -182,6 +182,48 @@ namespace Compass.Api.Controllers
             }
             return BadRequest(result);
         }
+
+
+        [HttpPost("users")]
+        public async Task<IActionResult> GetUsersAsync()
+        {
+            var result = await _userService.GetAllUsersAsync();
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
+
+
+
+        [AllowAnonymous]
+        [HttpPost("ConfirmEmail")]
+        public async Task<IActionResult> ConfirmEmailAsync([FromBody] ConfirmEmailDto model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Id) || string.IsNullOrWhiteSpace(model.Token))
+                return NotFound();
+
+            var result = await _userService.ConfirmEmailAsync(model);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
+
+
+
+
+
+
+
+
+
 
     }
 }

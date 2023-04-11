@@ -14,6 +14,7 @@ import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { ChangePasswordSchema, ChangeProfileSchema } from "../auth/validation";
 import { useNavigate } from "react-router-dom";
+import { changePassword } from "../../services/api-user-service";
 
 const changePasswordValues = {
   oldPassword: "",
@@ -29,11 +30,13 @@ const changeProfileValues = {
 };
 
 const Profile: React.FC<any> = () => {
+  const { profile } = useTypedSelector((store) => store.UserReducer);
   const { user } = useTypedSelector((store) => store.UserReducer);
-  const { ChangePassword, UpdateProfile } = useActions();
   const { message } = useTypedSelector((store) => store.UserReducer);
+  const { GetUserProfile } = useActions();
+  const { ChangePassword, UpdateUser } = useActions();
   const navigate = useNavigate();
-
+  const [changePassword, setChangePassword] = React.useState(false);
   changeProfileValues.name = user.Name;
   changeProfileValues.surname = user.Surname;
   changeProfileValues.email = user.Email;
@@ -72,8 +75,8 @@ const Profile: React.FC<any> = () => {
       PhoneNumber: phone,
       Email: email,
     };
-    console.log(updatedUser);
-    UpdateProfile(updatedUser);
+    // console.log(updatedUser);
+    UpdateUser(updatedUser);
   };
 
   if (message === "Profile updated!" || message === "Password changed.") {
@@ -245,6 +248,9 @@ const Profile: React.FC<any> = () => {
                 }}
               >
                 <Button
+                 onClick={() => {
+                  setChangePassword(!changePassword);
+                }}
                   disabled={!(isValid && dirty)}
                   type="submit"
                   color="primary"

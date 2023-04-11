@@ -2,9 +2,11 @@ import { Dispatch } from "redux";
 import { UserActionType, UserActions } from "../../reducers/userReducers/types";
 import {
   changePassword,
+  Confirm,
   Delete,
   Edit,
   GetAll,
+  GetProfile,
   Incert,
   Login,
   Logout,
@@ -18,6 +20,9 @@ import {
 } from "../../../services/api-user-service";
 import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
+
+
+
 
 export const IncertUser = (user: any) => {
   return async (dispatch: Dispatch<UserActions>) => {
@@ -215,9 +220,49 @@ export const UpdateProfile = (user: any) => {
     };
   };
 
+  export const GetUserProfile = (id: string) => {
+    return async (dispatch: Dispatch<UserActions>) => {
+      try {
+        dispatch({ type: UserActionType.START_REQUEST });
+        const data = await GetProfile(id);
+        const { response } = data;
+        if (response.success) {
+          dispatch({
+            type: UserActionType.USER_PROFILE_LOADED,
+            payload: response.payload,
+          });
+        }
+      } catch {}
+    }
+  };
 
 
-
+  export const ConfirmUserEmail = (emailData: any) => {
+    return async (dispatch: Dispatch<UserActions>) => {
+      try {
+        dispatch({ type: UserActionType.START_REQUEST });
+        const data = await Confirm(emailData);
+        if (data == undefined) {
+          toast.error("Something went wrong");
+          dispatch({
+            type: UserActionType.FINISH_REQUEST,
+            payload: "",
+          });
+        }
+        const { response } = data;
+  
+        if (response.success) {
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+        dispatch({
+          type: UserActionType.FINISH_REQUEST,
+          payload: response.message,
+        });
+      } catch {}
+    };
+  };
 
 
 

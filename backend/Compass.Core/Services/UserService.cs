@@ -183,40 +183,6 @@ namespace Compass.Core.Services
 
 
 
-
-        public async Task<ServiceResponse> ConfirmEmailAsync(string userId, string token)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return new ServiceResponse
-                {
-                    Success = false,
-                    Message = "User not found"
-                };
-            }
-
-            var decodedToken = WebEncoders.Base64UrlDecode(token);
-            string normalToken = Encoding.UTF8.GetString(decodedToken);
-
-            var result = await _userManager.ConfirmEmailAsync(user, normalToken);
-
-            if (result.Succeeded)
-                return new ServiceResponse
-                {
-                    Message = "Email confirmed successfully!",
-                    Success = true,
-                };
-
-            return new ServiceResponse
-            {
-                Success = false,
-                Message = "Email did not confirm",
-                Errors = result.Errors.Select(e => e.Description)
-            };
-        }
-
-
         public async Task SendConfirmationEmailAsync(AppUser newUser)
         {
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
@@ -224,19 +190,53 @@ namespace Compass.Core.Services
             var encodedEmailToken = Encoding.UTF8.GetBytes(token);
             var validEmailToken = WebEncoders.Base64UrlEncode(encodedEmailToken);
 
+
+
             string url = $"{_configuration["HostSettings:URL"]}/confirmEmail?userid={newUser.Id}&token={validEmailToken}";
 
             string emailBody = $"<h1>Confirm your email</h1> <a href='{url}'>Confirm now</a>";
             await _emailService.SendEmailAsync(newUser.Email, "Email confirmation.", emailBody);
         }
 
+        public async Task<ServiceResponse> ConfirmEmailAsync(ConfirmEmailDto model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+
+            try
+            {
+                var token = WebEncoders.Base64UrlDecode(model.Token);
+                var res = await _userManager.ConfirmEmailAsync(user, Encoding.UTF8.GetString(token));
+                if (res.Succeeded)
+                {
+                    return new ServiceResponse
+                    {
+                        Success = true,
+                        Message = "Email confirmed!"
+                    };
+                }
+            }
+            catch { }
+            return new ServiceResponse
+            {
+                Success = false,
+                Message = "Invalid token."
+            };
+
+        }
 
 
 
 
 
-
-        public async Task<ServiceResponse> GetUserByAsync(string id)
+            public async Task<ServiceResponse> GetUserByAsync(string id)
         {
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
