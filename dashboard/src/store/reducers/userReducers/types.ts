@@ -14,8 +14,9 @@ export enum UserActionType {
   FINISH_REQUEST = "FINISH_REQUEST",
   LOGIN_USER_SUCCESS = "LOGIN_USER_SUCCESS",
   LOGOUT_USER = "LOGOUT_USER",
-  SELECTED_USER = "SELECTED_USER",
   USER_PROFILE_LOADED = "USER_PROFILE_LOADED",
+  SELECTED_USER = "SELECTED_USER",
+
   PROFILE_UPDATED = "PROFILE_UPDATED"
 }
 
@@ -61,11 +62,12 @@ interface AllUsersLoadedAction {
 }
 
 export type UserActions =
-  | LogoutUserRequestAction
   | LoginUserSuccessAction
+  | LogoutUserRequestAction
   | FinishRequestAction
   | StartRequestAction
-  | SelectUserAction
+
   | UserProfileLoadedAction
   | UserEditedAction
+  | SelectUserAction
   | AllUsersLoadedAction;

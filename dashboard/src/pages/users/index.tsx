@@ -24,7 +24,7 @@ import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Button from "@mui/material/Button";
 import { useDispatch } from "react-redux";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
 
 interface Data {
@@ -299,11 +299,11 @@ const Users: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-  const { GetAllUsers, SelectdUser } = useActions();
+  const navigate = useNavigate();
+  const { GetAllUsers } = useActions();
   const { allUsers } = useTypedSelector((store) => store.UserReducer);
   let rows: any[] = allUsers;
-  const [redirect, setRedirect] = React.useState<boolean>(false);
+  
 
   const { user } = useTypedSelector((store) => store.UserReducer);
   const { selectedUser } = useTypedSelector((store) => store.UserReducer);
@@ -368,13 +368,10 @@ const Users: React.FC = () => {
   };
 
   const handleEditClick = (row: any) => {
-    // console.log(row);
-    SelectdUser(row);
-    setRedirect(true);
+    localStorage.setItem("updateUser", JSON.stringify(row));
+    navigate("/dashboard/editUser/");
   };
-  if (redirect) {
-    return <Navigate to="/dashboard/editUser/" />;
-  }
+
 
 
   const isSelected = (name: any) => selected.indexOf(name) !== -1;

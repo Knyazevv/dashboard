@@ -13,5 +13,6 @@ namespace Compass.Core.DTO_s
         public string Email { get; set; } = string.Empty;
         public string OldEmail { get; set; } = string.Empty;
         public string PhoneNumber { get; set; } = string.Empty;
+        
     }
 }

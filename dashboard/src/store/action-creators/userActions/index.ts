@@ -13,14 +13,40 @@ import {
   removeTokens,
   setAccessToken,
   setRefreshToken,
-  setSelectedUser,
   updateProfile, 
+  Block,
 
 } from "../../../services/api-user-service";
 import { toast } from "react-toastify";
 import jwtDecode from "jwt-decode";
 
 
+
+
+
+
+export const BlockUser = (email: string) => {
+  console.log(email);
+  return async (dispatch: Dispatch<UserActions>) => {
+    try {
+      console.log(email);
+      dispatch({ type: UserActionType.START_REQUEST });
+      const data = await Block(email);
+      const { response } = data;
+
+      if (response.success) {
+        localStorage.removeItem("updateUser");
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+      dispatch({
+        type: UserActionType.FINISH_REQUEST,
+        payload: response.message,
+      });
+    } catch {}
+  };
+};
 
 
 export const IncertUser = (user: any) => {
@@ -49,7 +75,7 @@ export const LoginUser = (user: any) => {
       dispatch({ type: UserActionType.START_REQUEST });
       const data = await Login(user);
       const { response } = data;
-      // console.log("response ", response);
+      
 
       if (response.success) {
         const { accessToken, refreshToken, message } = response;
@@ -186,7 +212,7 @@ export const UpdateProfile = (user: any) => {
         const { response } = data;
   
         if (response.success) {
-          localStorage.removeItem("selectedUser");
+          localStorage.removeItem("updateUser");
           toast.success(response.message);
         } else {
           toast.error(response.message);
@@ -268,9 +294,5 @@ export const UpdateProfile = (user: any) => {
   };
 
 
-    export const SelectdUser = (user: any) => {
-      return async (dispatch: Dispatch<UserActions>) => {
-        dispatch({ type: UserActionType.SELECTED_USER, payload: user });
-        setSelectedUser(user);
-      };
-    };
+   
+  

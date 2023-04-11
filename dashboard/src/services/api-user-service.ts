@@ -112,7 +112,7 @@ const User = {
   GetAll: () => request.get("/getall"),
   ChangePassword: (user: any) => request.post(`/changePassword`, user),
   UpdateProfile: (user: any) => request.post(`/updateProfile`, user),
-  
+  Block: (email: string) => request.post("/blockUser", email),
   Edit: (user: any) => request.post("/edituser", user),
   Delete: (email: string) => request.post("/deleteUser", email),
   GetProfile: (id: string) => request.get("/profile?userId=" + id),
@@ -131,6 +131,17 @@ export async function Incert(user: any) {
   return data;
 }
 
+
+export async function Block(email: string) {
+  const data = await User.Block(email)
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}
 
 export async function Confirm(emailData: any) {
   const data = await User.Confirm(emailData)
@@ -264,8 +275,3 @@ export async function GetProfile(id: string) {
 
 
 
-
-export function setSelectedUser(user: any) {
-  user = JSON.stringify(user);
-  window.localStorage.setItem("selectedUser", user);
-}

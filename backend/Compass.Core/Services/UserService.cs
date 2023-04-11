@@ -308,6 +308,7 @@ namespace Compass.Core.Services
             user.Surname = model.Surname;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
+           
 
             await _userManager.UpdateAsync(user);
 
@@ -393,6 +394,41 @@ namespace Compass.Core.Services
                 Payload = mapped
             };
         }
+
+        public async Task<ServiceResponse> BlockUserAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "User not found."
+                };
+            }
+
+            if (await _userManager.IsLockedOutAsync(user))
+            {
+                await _userManager.SetLockoutEndDateAsync(user, DateTime.Now);
+            }
+            else
+            {
+                await _userManager.SetLockoutEndDateAsync(user, DateTime.Now.AddYears(5));
+            }
+
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "User blocked or unblocked."
+            };
+        }
+
+
+
+
+
+
+
 
 
     }

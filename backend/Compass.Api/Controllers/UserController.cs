@@ -219,6 +219,17 @@ namespace Compass.Api.Controllers
 
 
 
+        [HttpPost("blockUser")]
+        public async Task<IActionResult> BlockUserAsync([FromBody] string email)
+        {
+            var result = await _userService.BlockUserAsync(email);
+
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
+        }
 
 
 

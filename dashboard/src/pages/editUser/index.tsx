@@ -1,256 +1,260 @@
 import {
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    Checkbox,
-    Divider,
-    FormControl,
-    FormControlLabel,
-    FormGroup,
-    Grid,
-    MenuItem,
-    Select,
-    Switch,
-    TextField,
-  } from "@mui/material";
-  import { Box } from "@mui/system";
-  import { Field, Formik } from "formik";
-  import React from "react";
-  import { useActions } from "../../hooks/useActions";
-  import { useTypedSelector } from "../../hooks/useTypedSelector";
-  import { ChangeProfileSchema } from "../auth/validation";
-  import { green, pink, red } from "@mui/material/colors";
-  import { Navigate } from "react-router-dom";
-  
-  const initialProfileValues = {
-    name: "",
-    surname: "",
-    email: "",
-    phone: "",
-    OldEmail:"",
-    role: "",
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  Checkbox,
+  Divider,
+  Grid,
+  TextField,
+} from "@mui/material";
+import { Box } from "@mui/system";
+import { Field, Formik } from "formik";
+import React from "react";
+import { useActions } from "../../hooks/useActions";
+import { ChangeProfileSchema } from "../auth/validation";
+import { green, pink, red } from "@mui/material/colors";
+import { Navigate } from "react-router-dom";
+
+const initialProfileValues = {
+  name: "",
+  surname: "",
+  email: "",
+  phone: "",
+  OldEmail: "",
+  role: "",
+};
+
+
+
+
+const EditUser: React.FC = () => {
+  const [block, setBlock] = React.useState(true);
+  const { EditUser, DeleteUser, BlockUser } = useActions();
+
+
+  let selectedUser = localStorage.getItem("updateUser");
+  if (selectedUser == null) {
+    return <Navigate to="/dashboard/users"></Navigate>;
+  }
+
+  let updateUser = JSON.parse(selectedUser);
+
+  initialProfileValues.name = updateUser.name;
+  initialProfileValues.surname = updateUser.surname;
+  initialProfileValues.email = updateUser.email;
+  initialProfileValues.phone = updateUser.phoneNumber;
+
+
+
+  const handleBlock = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setBlock(event.target.checked);
   };
 
 
+  const changeProfile = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
 
-  
-  const EditUser: React.FC = () => {
-    
-     const [block, setBlock] = React.useState(true);
-    const { EditUser,  DeleteUser} = useActions();
-    
-  
-    let su = localStorage.getItem("selectedUser");
-    if (su == null) {
-      return <Navigate to="/dashboard/users"></Navigate>;
-    }
-  
-    let selectedUser = JSON.parse(su);
-  
-   
-  
-  
-  
-    
-    initialProfileValues.name = selectedUser.name;
-    initialProfileValues.surname = selectedUser.surname;
-    initialProfileValues.email = selectedUser.email;
-    initialProfileValues.phone = selectedUser.phoneNumber;
-    initialProfileValues.role = selectedUser.role;
-  
-  
-    const handleBlock = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setBlock(event.target.checked);
+    const data = new FormData(event.currentTarget);
+
+
+    const updatedUser = {
+      Name: data.get("name"),
+      Surname: data.get("surname"),
+      Email: data.get("email"),
+      OldEmail: updateUser.email,
+      PhoneNumber: data.get("phone"),
+
     };
-  
-  
-    const changeProfile = (event: React.FormEvent<HTMLFormElement>) => {
-      event.preventDefault();
-  
-      const data = new FormData(event.currentTarget);
-    
-      
-      const updatedUser = {
-        Name: data.get("name"),
-        Surname: data.get("surname"),
-        Email: data.get("email"),
-        OldEmail: selectedUser.email,
-        PhoneNumber: data.get("phone"),
-        Role: data.get("role"),
-      };
-      EditUser(updatedUser);
-    };
-  
-    return (
-      <>
-        <Formik
-          validationSchema={ChangeProfileSchema}
-          initialValues={initialProfileValues}
-          onSubmit={() => { }}
-        >
-          {({ errors, touched, isValid }) => (
+    EditUser(updatedUser);
+  };
+
+  return (
+    <>
+      <Formik
+        validationSchema={ChangeProfileSchema}
+        initialValues={initialProfileValues}
+        onSubmit={() => { }}
+      >
+        {({ errors, touched, isValid }) => (
+          <Card>
+            <Box
+              onSubmit={changeProfile}
+              component="form"
+              noValidate
+              style={{ width: "100%" }}
+              sx={{ mt: 1 }}
+            >
+              <CardHeader
+                title="Updating user"
+              ></CardHeader>
+              <CardContent>
+                <Grid container spacing={3}>
+                  <Grid item md={6} xs={12}>
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label={"First name"}
+                      name="name"
+                      variant="outlined"
+                    />
+                    {errors.name && touched.name ? (
+                      <div style={{ color: "red" }}>{errors.name}</div>
+                    ) : null}
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label={"Second name"}
+                      name="surname"
+                      variant="outlined"
+                    />{" "}
+                    {errors.surname && touched.surname ? (
+                      <div style={{ color: "red" }}>{errors.surname}</div>
+                    ) : null}
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label={"Email"}
+                      name="email"
+                      variant="outlined"
+                    />
+                    {errors.email && touched.email ? (
+                      <div style={{ color: "red" }}>{errors.email}</div>
+                    ) : null}
+                  </Grid>
+                  <Grid item md={6} xs={12}>
+                    <Field
+                      as={TextField}
+                      fullWidth
+                      label={"Phone"}
+                      name="phone"
+                      variant="outlined"
+                    />
+                    {errors.phone && touched.phone ? (
+                      <div style={{ color: "red" }}>{errors.email}</div>
+                    ) : null}
+                  </Grid>
+
+
+
+
+                  <Grid item md={6} xs={12}>
+
+                    <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
+                      <Button
+                        disabled={!isValid}
+                        color="primary"
+                        type="submit"
+                        variant="contained"
+                      >
+                        Save
+                      </Button>
+                    </Box>
+                  </Grid>
+
+                </Grid>
+
+              </CardContent>
+              <Divider />
+            </Box>
+
+
+
+
+
             <Card>
-              <Box
-                onSubmit={changeProfile}
-                component="form"
-                noValidate
-                style={{ width: "100%" }}
-                sx={{ mt: 1 }}
-              >
+              <Box style={{ width: "100%" }} sx={{ mt: 1 }} >
                 <CardHeader
-                  title="Updating user"
-                  // subheader={"User information"}
+                  style={{
+                    color: "red",
+
+                  }}
+                  subheader={"Block or delete user"}
+                  title="Danger zone"
                 ></CardHeader>
                 <CardContent>
                   <Grid container spacing={3}>
+
+
                     <Grid item md={6} xs={12}>
-                      <Field
-                        as={TextField}
-                        fullWidth
-                        label={"First name"}
-                        name="name"
-                        variant="outlined"
-                      />
-                      {errors.name && touched.name ? (
-                        <div style={{ color: "red" }}>{errors.name}</div>
-                      ) : null}
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                      <Field
-                        as={TextField}
-                        fullWidth
-                        label={"Second name"}
-                        name="surname"
-                        variant="outlined"
-                      />{" "}
-                      {errors.surname && touched.surname ? (
-                        <div style={{ color: "red" }}>{errors.surname}</div>
-                      ) : null}
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                      <Field
-                        as={TextField}
-                        fullWidth
-                        label={"Email"}
-                        name="email"
-                        variant="outlined"
-                      />
-                      {errors.email && touched.email ? (
-                        <div style={{ color: "red" }}>{errors.email}</div>
-                      ) : null}
-                    </Grid>
-                    <Grid item md={6} xs={12}>
-                      <Field
-                        as={TextField}
-                        fullWidth
-                        label={"Phone"}
-                        name="phone"
-                        variant="outlined"
-                      />
-                      {errors.phone && touched.phone ? (
-                        <div style={{ color: "red" }}>{errors.email}</div>
-                      ) : null}
-                    </Grid>
-  
-                    <Grid item md={6} xs={12}>
-                      <FormControl sx={{ width: "100%" }}>
-                        <Field
-                          as={Select}
-                          fullWidth
-                          name="role"
-                          variant="outlined"
+                      <Box display="flex" justifyContent="flex-end">
+                        {" "}
+                        <span
+                          style={{
+                            justifyContent: "center",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
                         >
-                          <MenuItem value={"Users"}>Users</MenuItem>
-                          <MenuItem value={"Administrators"}>
-                            Administrators
-                          </MenuItem>
-                        </Field>
-                      </FormControl>
-                    </Grid>
-  
-  
-                    <Grid item md={6} xs={12}>
-  
-                      <Box sx={{ display: "flex", justifyContent: "flex-end", p: 2 }}>
-                        <Button
-                          disabled={!isValid}
-                          color="primary"
-                          type="submit"
-                          variant="contained"
-                        >
-                          Save
-                        </Button>
+                          Block/unblcok user
+                          <Checkbox sx={{ '&.Mui-checked': { color: red[700], }, color: green[600] }} />
+                        </span>
+
                       </Box>
                     </Grid>
-  
-                  </Grid>
-  
-                </CardContent>
-                <Divider />
-              </Box>
-  
-  
-  
-  
-  
-              <Card>
-                <Box style={{ width: "100%" }} sx={{ mt: 1 }} >
-                  <CardHeader
-                    style={{
-                      color: "red",
-  
-                    }}
-                    subheader={"Block or delete user"}
-                    title="Danger zone"
-                  ></CardHeader>
-                  <CardContent>
-                    <Grid container spacing={3}>
-  
-  
-                      <Grid item md={6} xs={12}>
-                        <Box display="flex" justifyContent="flex-end">
-                          {" "}
-                          <span
-                            style={{
-                              justifyContent: "center",
-                              display: "flex",
-                              alignItems: "center",
-                            }}
-                          >
-                            Block/unblcok user
-                            <Checkbox sx={{ '&.Mui-checked': { color: red[700], }, color: green[600] }} />
-                          </span>
-  
-                        </Box>
-                      </Grid>
-                      <Grid item md={6} xs={12}>
-  
+
+
+                    <Grid item md={6} xs={12}>
+
+                      <Button
+                        onClick={() => {
+                          DeleteUser(updateUser.email);
+                        }}
+                        variant="contained"
+                        color="error"
+                      >
+                        Delete user
+
+                      </Button>
+
+
+
+                      {updateUser.isBlocked ? (
                         <Button
                           onClick={() => {
-                            DeleteUser(selectedUser.email);
+                            BlockUser(updateUser.email);
                           }}
-                         variant="contained"
-                          color="error"
-                          >
-                          Delete user
-                    
+                          fullWidth
+                          variant="contained"
+                          color="success"
+                        >
+                          Unblock User
                         </Button>
-  
-  
-  
-                      </Grid>
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            BlockUser(updateUser.email);
+                          }}
+                          fullWidth
+                          variant="contained"
+                          color="warning"
+                        >
+                          Block User
+                        </Button>
+                      )}
+
                     </Grid>
-                  </CardContent>
-                </Box>
-              </Card>
-  
-  
+                  </Grid>
+
+
+
+
+
+
+                </CardContent>
+              </Box>
             </Card>
-          )}
-        </Formik>
-  
-      </>
-    );
-  };
-  export default EditUser;
+
+
+          </Card>
+        )}
+      </Formik>
+
+    </>
+  );
+};
+export default EditUser;

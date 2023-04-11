@@ -30,10 +30,10 @@ const changeProfileValues = {
 };
 
 const Profile: React.FC<any> = () => {
-  const { profile } = useTypedSelector((store) => store.UserReducer);
+
   const { user } = useTypedSelector((store) => store.UserReducer);
   const { message } = useTypedSelector((store) => store.UserReducer);
-  const { GetUserProfile } = useActions();
+
   const { ChangePassword, UpdateProfile } = useActions();
   const navigate = useNavigate();
   const [changePassword, setChangePassword] = React.useState(false);
@@ -75,7 +75,7 @@ const Profile: React.FC<any> = () => {
       PhoneNumber: phone,
       Email: email,
     };
-    // console.log(updatedUser);
+   
     UpdateProfile(updatedUser);
   };
 
