@@ -8,8 +8,10 @@ import SignIn from "./pages/auth/singIn";
 import SignUp from "./pages/auth/signUp";
 import { useTypedSelector } from "./hooks/useTypedSelector";
 import Profile from "./pages/profile";
-import UserUpdare from "./pages/updateUser";
+
 import ConfirmEmail from "./pages/confirmEmail";
+import EditUser from "./pages/editUser";
+
 
 
 
@@ -25,7 +27,7 @@ const App: React.FC = () => {
               <Route path="users" element={<Users />} />
               <Route path="sign-up" element={<SignUp />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="userUpdate" element={<UserUpdare />} />
+              <Route path="edituser" element={<EditUser />} />
             </Route>
           )}
           {user.role === "Users" && (

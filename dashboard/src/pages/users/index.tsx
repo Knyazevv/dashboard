@@ -373,7 +373,7 @@ const Users: React.FC = () => {
     setRedirect(true);
   };
   if (redirect) {
-    return <Navigate to="/dashboard/userUpdate/" />;
+    return <Navigate to="/dashboard/editUser/" />;
   }
 
 

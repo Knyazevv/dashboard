@@ -120,8 +120,7 @@ namespace Compass.Api.Controllers
 
 
 
-
-        [HttpPost("updateUser")]
+        [HttpPost("editUser")]
         public async Task<IActionResult> EditUserAsync([FromBody] EditUserDto model)
         {
             var validator = new EditUserValidation();
@@ -138,6 +137,8 @@ namespace Compass.Api.Controllers
             }
             return BadRequest(validatinResult.Errors);
         }
+
+
 
         [HttpPost("changePassword")]
         public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordDto model)

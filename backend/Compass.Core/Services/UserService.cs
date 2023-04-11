@@ -292,10 +292,9 @@ namespace Compass.Core.Services
                 Message = "Profile updated!"
             };
         }
-
         public async Task<ServiceResponse> EditUserAsync(EditUserDto model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            var user = await _userManager.FindByEmailAsync(model.OldEmail);
             if (user == null)
             {
                 return new ServiceResponse

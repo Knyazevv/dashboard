@@ -34,7 +34,7 @@ const Profile: React.FC<any> = () => {
   const { user } = useTypedSelector((store) => store.UserReducer);
   const { message } = useTypedSelector((store) => store.UserReducer);
   const { GetUserProfile } = useActions();
-  const { ChangePassword, UpdateUser } = useActions();
+  const { ChangePassword, UpdateProfile } = useActions();
   const navigate = useNavigate();
   const [changePassword, setChangePassword] = React.useState(false);
   changeProfileValues.name = user.Name;
@@ -76,7 +76,7 @@ const Profile: React.FC<any> = () => {
       Email: email,
     };
     // console.log(updatedUser);
-    UpdateUser(updatedUser);
+    UpdateProfile(updatedUser);
   };
 
   if (message === "Profile updated!" || message === "Password changed.") {
