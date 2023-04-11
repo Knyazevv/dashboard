@@ -111,7 +111,7 @@ const User = {
   Logout: (id: string) => request.get("/logout?userId=" + id),
   GetAll: () => request.get("/getall"),
   ChangePassword: (user: any) => request.post(`/changePassword`, user),
-  UpdateProfile: (user: any) => request.post(`/updateProfile`, user),
+  UpdateProfile: (user: any) => request.post(`/update`, user),
   Block: (email: string) => request.post("/blockUser", email),
   Edit: (user: any) => request.post("/edituser", user),
   Delete: (email: string) => request.post("/deleteUser", email),

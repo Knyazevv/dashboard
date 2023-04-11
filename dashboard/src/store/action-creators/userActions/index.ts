@@ -134,8 +134,7 @@ export const AuthUser = (
 };
 
 
-export const GetAllUsers = () => {
-  console.log("works");
+export const GetAllUsers = () => {  
   return async (dispatch: Dispatch<UserActions>) => {
     try {
       dispatch({ type: UserActionType.START_REQUEST });
@@ -153,28 +152,25 @@ export const GetAllUsers = () => {
   };
 
 
-  export const ChangePassword = (user: any) => {
+  export const ChangeUserPassword = (user: any) => {
     return async (dispatch: Dispatch<UserActions>) => {
       try {
         dispatch({ type: UserActionType.START_REQUEST });
         const data = await changePassword(user);
         const { response } = data;
-        if (!response.isSuccess) {
-          dispatch({
-            type: UserActionType.LOGIN_USER_SUCCESS,
-            payload: response.message,
-          });
-          toast.error(response.message);
-        } else {
-          dispatch({
-            type: UserActionType.FINISH_REQUEST,
-            payload: response.message,
-          });
+  
+        if (response.success) {
           toast.success(response.message);
+        } else {
+          toast.error(response.message);
         }
+        dispatch({
+          type: UserActionType.FINISH_REQUEST,
+          payload: response.message,
+        });
       } catch {}
-    }
     };
+  };
 
 
     
@@ -189,14 +185,14 @@ export const UpdateProfile = (user: any) => {
           type: UserActionType.FINISH_REQUEST,
           payload: response.message,
         });
-        toast.error(response.message);
+        toast.success(response.message);
       } else {
         const { accessToken, refreshToken, message } = data.response;
         removeTokens();
         setAccessToken(accessToken);
         setRefreshToken(refreshToken);
         AuthUser(accessToken, message, dispatch);
-        toast.success(response.message);
+        toast.error(response.message);
       }
     } catch {}
   }

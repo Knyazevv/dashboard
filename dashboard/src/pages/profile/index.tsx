@@ -34,29 +34,31 @@ const Profile: React.FC<any> = () => {
   const { user } = useTypedSelector((store) => store.UserReducer);
   const { message } = useTypedSelector((store) => store.UserReducer);
 
-  const { ChangePassword, UpdateProfile } = useActions();
+  const { ChangeUserPassword, UpdateProfile } = useActions();
   const navigate = useNavigate();
   const [changePassword, setChangePassword] = React.useState(false);
+
+  
   changeProfileValues.name = user.Name;
   changeProfileValues.surname = user.Surname;
   changeProfileValues.email = user.Email;
   changeProfileValues.phone = user.PhoneNumber;
 
-  const changePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const ChangePasswordSubmit = (
+    event: React.FormEvent<HTMLFormElement>
+  ) => {
     event.preventDefault();
 
     const data = new FormData(event.currentTarget);
 
-    const OldPassword = data.get("oldPassword");
-    const NewPassword = data.get("currentPassword");
-    const ConfirmPassword = data.get("confirmPassword");
-    const updatedPassword = {
-      UserId: user.Id,
-      OldPassword,
-      NewPassword,
-      ConfirmPassword,
+    const updatedUser = {
+      Id: user.Id,
+      OldPassword: data.get("oldPassword"),
+      NewPassword: data.get("currentPassword"),
+      ConfirmPassword: data.get("confirmPassword"),
     };
-    ChangePassword(updatedPassword);
+
+    ChangeUserPassword(updatedUser);
   };
 
   const changeProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -189,7 +191,7 @@ const Profile: React.FC<any> = () => {
         {({ errors, touched, isSubmitting, isValid, dirty }) => (
           <Card>
             <Box
-              onSubmit={changePasswordSubmit}
+              onSubmit={ChangePasswordSubmit}
               style={{ width: "100%" }}
               component="form"
               noValidate

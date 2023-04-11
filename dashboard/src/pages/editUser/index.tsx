@@ -176,30 +176,48 @@ const EditUser: React.FC = () => {
                   subheader={"Block or delete user"}
                   title="Danger zone"
                 ></CardHeader>
+
+
+
+
+
+
+
+
                 <CardContent>
                   <Grid container spacing={3}>
+                    <Grid item md={5} xs={12}></Grid>
 
 
                     <Grid item md={6} xs={12}>
-                      <Box display="flex" justifyContent="flex-end">
-                        {" "}
-                        <span
-                          style={{
-                            justifyContent: "center",
-                            display: "flex",
-                            alignItems: "center",
+
+
+
+                    {updateUser.isBlocked ? (
+                        <Button
+                          onClick={() => {
+                            BlockUser(updateUser.email);
                           }}
+                       
+                          variant="contained"
+                          color="success"
                         >
-                          Block/unblcok user
-                          <Checkbox sx={{ '&.Mui-checked': { color: red[700], }, color: green[600] }} />
-                        </span>
-
-                      </Box>
-                    </Grid>
-
-
-                    <Grid item md={6} xs={12}>
-
+                          Unblock User
+                        </Button>
+                      ) : (
+                        <Button
+                          onClick={() => {
+                            BlockUser(updateUser.email);
+                          }}
+                          
+                          variant="contained"
+                          color="warning"
+                        >
+                          Block User
+                        </Button>
+                      )}
+                      
+                      
                       <Button
                         onClick={() => {
                           DeleteUser(updateUser.email);
@@ -213,29 +231,7 @@ const EditUser: React.FC = () => {
 
 
 
-                      {updateUser.isBlocked ? (
-                        <Button
-                          onClick={() => {
-                            BlockUser(updateUser.email);
-                          }}
-                          fullWidth
-                          variant="contained"
-                          color="success"
-                        >
-                          Unblock User
-                        </Button>
-                      ) : (
-                        <Button
-                          onClick={() => {
-                            BlockUser(updateUser.email);
-                          }}
-                          fullWidth
-                          variant="contained"
-                          color="warning"
-                        >
-                          Block User
-                        </Button>
-                      )}
+                      
 
                     </Grid>
                   </Grid>

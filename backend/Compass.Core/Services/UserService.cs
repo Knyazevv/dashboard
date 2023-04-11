@@ -169,6 +169,7 @@ namespace Compass.Core.Services
             for (int i = 0; i < users.Count; i++)
             {
                 mappedUsers[i].Role = (await _userManager.GetRolesAsync(users[i])).FirstOrDefault();
+                mappedUsers[i].IsBlocked = await _userManager.IsLockedOutAsync(users[i]);
             }
 
             return new ServiceResponse
@@ -270,7 +271,6 @@ namespace Compass.Core.Services
             }
 
          
-
             user.Name = model.Name;
             user.Surname = model.Surname;
             user.Email = model.Email;
@@ -284,6 +284,9 @@ namespace Compass.Core.Services
                 Message = "Profile updated!"
             };
         }
+
+
+
         public async Task<ServiceResponse> EditUserAsync(EditUserDto model)
         {
             var user = await _userManager.FindByEmailAsync(model.OldEmail);

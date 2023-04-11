@@ -99,10 +99,10 @@ namespace Compass.Api.Controllers
 
 
 
-        [HttpPost("updateProfile")]
+        [HttpPost("update")]
         public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto model)
         {
-            var validator = new UpdateProfileValidation();
+            var validator = new UpdateUserValidation();
             var validatinResult = await validator.ValidateAsync(model);
             if (validatinResult.IsValid)
             {
@@ -157,6 +157,7 @@ namespace Compass.Api.Controllers
             }
             return BadRequest(validatinResult.Errors);
         }
+
 
         [HttpPost("deleteUser")]
         public async Task<IActionResult> DeleteUserAsync([FromBody] string email)
