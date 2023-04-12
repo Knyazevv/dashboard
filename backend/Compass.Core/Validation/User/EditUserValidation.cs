@@ -19,3 +19,4 @@ namespace Compass.Core.Validation.User
         }
     }
 }
+

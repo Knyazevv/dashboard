@@ -270,19 +270,27 @@ namespace Compass.Core.Services
                 };
             }
 
-         
+            if (user.Email != model.Email)
+            {
+                user.EmailConfirmed = false;
+            }
             user.Name = model.Name;
             user.Surname = model.Surname;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
 
-            await _userManager.UpdateAsync(user);
 
-            return new ServiceResponse
-            {
-                Success = true,
-                Message = "Profile updated!"
-            };
+            var result = await _userManager.UpdateAsync(user);
+
+           
+                await SendConfirmationEmailAsync(user);
+                await _signInManager.SignOutAsync();
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "Profile successfully updated."
+                };
+            
         }
 
 
@@ -303,7 +311,14 @@ namespace Compass.Core.Services
             user.Surname = model.Surname;
             user.Email = model.Email;
             user.PhoneNumber = model.PhoneNumber;
-           
+            if (user.Email != model.OldEmail)
+            {
+                user.Email = model.Email;
+                user.UserName = model.Email;
+                user.EmailConfirmed = false;
+                await SendConfirmationEmailAsync(user);
+            }
+
 
             await _userManager.UpdateAsync(user);
 

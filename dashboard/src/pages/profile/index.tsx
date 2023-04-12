@@ -13,7 +13,7 @@ import { Field, Formik } from "formik";
 import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { ChangePasswordSchema, ChangeProfileSchema } from "../auth/validation";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
 
 const changePasswordValues = {
@@ -38,7 +38,7 @@ const Profile: React.FC<any> = () => {
   const navigate = useNavigate();
   const [changePassword, setChangePassword] = React.useState(false);
 
-
+ 
   
   changeProfileValues.name = user.Name;
   changeProfileValues.surname = user.Surname;

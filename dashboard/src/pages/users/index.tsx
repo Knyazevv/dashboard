@@ -218,8 +218,6 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
   const [redirect, setRedirect] = React.useState<boolean>(false);
 
-
-
   const onClick = () => {  
     setRedirect(true);
   };
@@ -303,8 +301,7 @@ const Users: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
-
+  const [redirect, setRedirect] = React.useState<boolean>(false);
 
 
   const { GetAllUsers } = useActions();
