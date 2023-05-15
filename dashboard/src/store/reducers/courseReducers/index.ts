@@ -1,19 +1,22 @@
-import { CourseActionType, CourseState, CourseActions } from "./types";
+import { CourseActionType,  CourseActions, CourseState } from "./types";
 
 const initialState: CourseState = {
   allCourse: [],
   loading: false,
   message: "",  
   course: {}, 
-  selectedCourse: null,
+
 };
 
 
 const CourseReducer = (state = initialState, action: CourseActions): CourseState => {
-    
+  console.log("COURSEReducer", action);
+
+
     switch (action.type) {
       case CourseActionType.START_REQUEST:
         return { ...state, loading: true };
+
       case CourseActionType.ALL_COURSE_LOADED:
         return { ...state, loading: false, allCourse: action.payload.payload };
         
@@ -23,6 +26,9 @@ const CourseReducer = (state = initialState, action: CourseActions): CourseState
       default:
         return state;
     }
+
+
+
   };
   
   export default CourseReducer;

@@ -11,11 +11,18 @@ const initialState: UserState = {
 };
 const UserReducer = (state = initialState, action: UserActions): UserState => {
   console.log("UserReducer", action);
+
+
   switch (action.type) {
     case UserActionType.START_REQUEST:
       return { ...state, loading: true };
+
+
     case UserActionType.ALL_USERS_LOADED:
       return { ...state, loading: false, allUsers: action.payload.payload };
+
+
+      
       case UserActionType.USER_PROFILE_LOADED:
         return { ...state, loading: false, profile: action.payload, message: "" };
     case UserActionType.FINISH_REQUEST:

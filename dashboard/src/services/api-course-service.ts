@@ -107,19 +107,45 @@ instance.interceptors.request.use(
       instance.post(url, body).then().then(responseBody),
   };
   
+
+
+
   const Course = {  
-    GetAll: () => request.get("/courses"),
- 
+      GetAll: () => request.get("/courses"),
+      // GetCurses: () => request.post("/getcourses"),
+      // GetProfile: (id: string) => request.get("/profile?courseId=" + id)
   };
 
-  export async function GetAll() {
-    const data = await Course.GetAll()
-    .then((response) => {
-      return { response };
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  return data;
-  }
+export async function GetAll() {
+  const data = await Course.GetAll()
+  .then((response) => {
+    return { response };
+  })
+  .catch((error) => {
+    return error.response;
+  });
+return data;
+}
+
+
+  // export async function GetCurses() {
+  //   const data = await Course.GetCurses()
+  //     .then((response) => {
+  //       return { response };
+  //     })
+  //     .catch((error) => {
+  //       return error.response;
+  //     });
+  //   return data;
+  // }
   
+  // export async function GetProfile(id: string) {
+  //   const data = await Course.GetProfile(id)
+  //     .then((response) => {
+  //       return { response };
+  //     })
+  //     .catch((error) => {
+  //       return error.response;
+  //     });
+  //   return data;
+  // }

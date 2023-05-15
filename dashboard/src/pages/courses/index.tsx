@@ -16,30 +16,30 @@ import Checkbox from "@mui/material/Checkbox";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
 import { visuallyHidden } from "@mui/utils";
-import { useActions } from "../../hooks/useActions";
 import { useTypedSelector } from "../../hooks/useTypedSelector";
 import Button from "@mui/material/Button";
 import { Navigate, useNavigate } from "react-router-dom";
-import { GetAllCourses } from "../../store/action-creators/courseAction";
+import { useActions } from "../../hooks/useActions";
+
 
 
 interface Data {
-  id: number;
+  id: string;
   title: string;
   description: string;
   price: string;
   imagePath: string;
-  categoryName: string;
+  
 
 }
 
 function createData(
-  id: number,
+  id: string,
   title: string,
   description: string,
   price: string,
   imagePath: string,
-  categoryName: string,
+
  
 ): Data {
   return {
@@ -48,7 +48,6 @@ function createData(
     description,
     price,
     imagePath,
-    categoryName
    
   };
 }
@@ -124,12 +123,7 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: "Image Path",
   },
-  {
-    id: "categoryName",
-    numeric: true,
-    disablePadding: false,
-    label: "CategoryName",
-  },
+
  
 ];
 
@@ -210,7 +204,7 @@ interface EnhancedTableToolbarProps {
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
-  const { user } = useTypedSelector((store) => store.UserReducer); 
+  const { course } = useTypedSelector((store) => store.CourseReducer); 
 
   const [redirect, setRedirect] = React.useState<boolean>(false);
 
@@ -264,7 +258,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         </Typography>
       )}
        
-       {user.role === "Administrators" ? (
+       {course.role === "Administrators" ? (
         <Typography
         
           sx={{ flex: "1 14 100%" }}
@@ -274,7 +268,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         >
          <Button variant="contained"
          onClick={() => onClick()} >
-        New user
+        New course
          </Button>
          </Typography>
          ) : null}
@@ -300,18 +294,18 @@ const Course: React.FC = () => {
   const [redirect, setRedirect] = React.useState<boolean>(false);
 
 
-  const { GetAllCourses } = useActions();
+  const { GetAllCourse } = useActions();
   const { allCourse } = useTypedSelector((store) => store.CourseReducer);
   const navigate = useNavigate();
   const { course } = useTypedSelector((store) => store.CourseReducer);
-  const { selectedCourse } = useTypedSelector((store) => store.CourseReducer);
+ 
 
   
 
 
 
   useEffect(() => {
-    GetAllCourses();
+    GetAllCourse();
   }, []);
 
 
@@ -368,10 +362,6 @@ const Course: React.FC = () => {
     setDense(event.target.checked);
   };
 
-  const handleEditClick = (row: any) => {
-    localStorage.setItem("updateCourse", JSON.stringify(row));
-    navigate("/dashboard/editCourse/");
-  };
 
 
 
@@ -429,18 +419,9 @@ const Course: React.FC = () => {
                       <TableCell align="right">{row.description}</TableCell>
                       <TableCell align="right">{row.price}</TableCell>
                       <TableCell align="right">{row.imagePath}</TableCell>
-                      <TableCell align="right">{row.categoryName}</TableCell>
+                     
                     
-                      {course.role === "Administrators" ? (
-                        <TableCell align="right">
-                          <Button
-                            variant="outlined"
-                            onClick={() => handleEditClick(row)}
-                          >
-                            Edit
-                          </Button>
-                        </TableCell>
-                      ) : null}
+                  
                     </TableRow>
                   );
                 })}

@@ -1,5 +1,7 @@
 import { Dispatch } from "redux";
+
 import { UserActionType, UserActions } from "../../reducers/userReducers/types";
+
 import {
   changePassword,
   Confirm,

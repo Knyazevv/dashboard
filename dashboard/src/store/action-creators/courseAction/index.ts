@@ -1,30 +1,26 @@
 import { Dispatch } from "redux";
-import { UserActionType, UserActions } from "../../reducers/userReducers/types";
-import { 
-    GetAll,
-} from "../../../services/api-course-service";
 
+import { CourseActionType, CourseActions,  } from "../../reducers/courseReducers/types";
 
-import { toast } from "react-toastify";
-import jwtDecode from "jwt-decode";
+import { GetAll } from "../../../services/api-course-service";
 
 
 
 
-export const GetAllCourses = () => {  
-    return async (dispatch: Dispatch<UserActions>) => {
-      try {
-        dispatch({ type: UserActionType.START_REQUEST });
-        const data = await GetAll();
-        const { response } = data;
-        console.log("response", response);
-        if (response.success) {
-          dispatch({
-            type: UserActionType.ALL_USERS_LOADED,
-            payload: response,
-          });
-        }
-      } catch {}
-    }
-    };
+export const GetAllCourse = () => {  
+  return async (dispatch: Dispatch<CourseActions>) => {
+    try {
+      dispatch({ type: CourseActionType.START_REQUEST });
+      const data = await GetAll();
+      const { response } = data;
+      console.log("ПРАЦЮЄ!!!!!!!!!!!!!!!!!!!", response);
+      if (response.success) {
+        dispatch({
+          type: CourseActionType.ALL_COURSE_LOADED,
+          payload: response,
+        });
+      }
+    } catch {}
+  }
+  };
   
