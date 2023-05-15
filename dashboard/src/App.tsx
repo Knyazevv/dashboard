@@ -11,6 +11,7 @@ import Profile from "./pages/profile";
 
 import ConfirmEmail from "./pages/confirmEmail";
 import EditUser from "./pages/editUser";
+import Course from "./pages/courses";
 
 
 
@@ -28,6 +29,7 @@ const App: React.FC = () => {
               <Route path="sign-up" element={<SignUp />} />
               <Route path="profile" element={<Profile />} />
               <Route path="edituser" element={<EditUser />} />
+              <Route path="courses" element={<Course />} />
             </Route>
           )}
           {user.role === "Users" && (
@@ -35,13 +37,14 @@ const App: React.FC = () => {
               <Route index element={<DefaultPage />} />
               <Route path="users" element={<Users />} />
               <Route path="profile" element={<Profile />} />
+              <Route path="courses" element={<Course />} />
             </Route>
           )}
         </>
       )}
       <Route path="/" element={<SignIn />} />
       <Route path="/dashboard/" element={<SignIn />} />
-      <Route path="/confirmEmail/" element={<ConfirmEmail />} />
+      <Route path="/confirmEmail/" element={<ConfirmEmail />} />     
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

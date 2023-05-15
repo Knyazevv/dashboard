@@ -25,6 +25,17 @@ export const adminMenu = (
         <ListItemText primary="Users" />
       </Link>
     </ListItemButton>
+
+    <ListItemButton>
+      <ListItemIcon>
+        <PeopleIcon />
+      </ListItemIcon>
+      <Link to="courses">
+        <ListItemText primary="Courses" />
+      </Link>
+    </ListItemButton>
+
+
     <ListItemButton>
       <ListItemIcon>
         <BarChartIcon />

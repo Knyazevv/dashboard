@@ -66,7 +66,6 @@ export type UserActions =
   | LogoutUserRequestAction
   | FinishRequestAction
   | StartRequestAction
-
   | UserProfileLoadedAction
   | UserEditedAction
   | SelectUserAction
