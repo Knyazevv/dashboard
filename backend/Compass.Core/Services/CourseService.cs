@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace Compass.Core.Services
 {
-    public class CategoryService : ICategoryService
+    public class CourseService : ICourseService
     {
-        private readonly IRepository<Category> _categoryRepo;
         private readonly IRepository<Course> _courseRepo;
         private readonly IMapper _mapper;
-        public CategoryService(IRepository<Category> categoryRepo, IMapper mapper)
+
+        public CourseService(IRepository<Course> courseRepo, IMapper mapper)
         {
-            _categoryRepo = categoryRepo;
+            _courseRepo = courseRepo;
             _mapper = mapper;
         }
         public async Task<List<CourseDto>> GetAll()

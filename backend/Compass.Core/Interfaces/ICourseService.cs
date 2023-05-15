@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Compass.Core.Interfaces
 {
-    public interface ICategoryService
+    public interface ICourseService
     {
         Task<List<CourseDto>> GetAll();
     }

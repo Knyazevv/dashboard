@@ -25,6 +25,11 @@ namespace Compass.Core
 
             // Add response service
             services.AddTransient<ServiceResponse>();
+
+
+            // Category service
+            services.AddTransient<ICategoryService, CategoryService>();
+            services.AddTransient<ICourseService, CourseService>();
         }
 
         // Add automapper
