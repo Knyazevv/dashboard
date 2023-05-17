@@ -153,9 +153,10 @@ function EnhancedTableHead(props: EnhancedTableProps) {
       onRequestSort(event, property);
     };
   const { course } = useTypedSelector((store) => store.CourseReducer);
+  const { user } = useTypedSelector((store) => store.UserReducer);
   return (
     <TableHead>
-      <TableRow>
+   <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
@@ -188,7 +189,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        {course.title === "Administrators" ? (
+        {user.role === "Administrators" ? (
           <TableCell align="right">
             <Box>Edit</Box>
           </TableCell>
@@ -204,19 +205,19 @@ interface EnhancedTableToolbarProps {
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
-  const { course } = useTypedSelector((store) => store.CourseReducer);
-
+  const { user } = useTypedSelector((store) => store.UserReducer);
   const [redirect, setRedirect] = React.useState<boolean>(false);
-
+  const { course } = useTypedSelector((store) => store.CourseReducer);
+  
   const onClick = () => {
     setRedirect(true);
   };
   if (redirect) {
     return <Navigate to="/dashboard/sign-up/" />;
   }
-
   return (
     <Toolbar
+  
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
@@ -276,6 +277,7 @@ const Course: React.FC = () => {
   const { allCourse } = useTypedSelector((store) => store.CourseReducer);
   const navigate = useNavigate();
   const { course } = useTypedSelector((store) => store.CourseReducer);
+  const { user } = useTypedSelector((store) => store.UserReducer);
 
   useEffect(() => {
     GetAllCourse();
