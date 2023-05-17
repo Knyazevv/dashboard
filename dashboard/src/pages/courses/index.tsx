@@ -21,16 +21,13 @@ import Button from "@mui/material/Button";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useActions } from "../../hooks/useActions";
 
-
-
 interface Data {
   id: string;
   title: string;
   description: string;
   price: string;
   imagePath: string;
-  
-
+  categoryName: string;
 }
 
 function createData(
@@ -39,8 +36,7 @@ function createData(
   description: string,
   price: string,
   imagePath: string,
-
- 
+  categoryName: string
 ): Data {
   return {
     id,
@@ -48,7 +44,7 @@ function createData(
     description,
     price,
     imagePath,
-   
+    categoryName,
   };
 }
 
@@ -123,8 +119,12 @@ const headCells: readonly HeadCell[] = [
     disablePadding: false,
     label: "Image Path",
   },
-
- 
+  {
+    id: "categoryName",
+    numeric: true,
+    disablePadding: false,
+    label: "Category",
+  },
 ];
 
 interface EnhancedTableProps {
@@ -204,27 +204,18 @@ interface EnhancedTableToolbarProps {
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
-  const { course } = useTypedSelector((store) => store.CourseReducer); 
+  const { course } = useTypedSelector((store) => store.CourseReducer);
 
   const [redirect, setRedirect] = React.useState<boolean>(false);
 
-  const onClick = () => {  
+  const onClick = () => {
     setRedirect(true);
   };
   if (redirect) {
     return <Navigate to="/dashboard/sign-up/" />;
   }
 
-
-
-
-
-
-
-
-
   return (
-    
     <Toolbar
       sx={{
         pl: { sm: 2 },
@@ -253,35 +244,23 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           variant="h6"
           id="tableTitle"
           component="div"
-        >
-          
-        </Typography>
+        ></Typography>
       )}
-       
-       {course.role === "Administrators" ? (
+
+      {course.role === "Administrators" ? (
         <Typography
-        
           sx={{ flex: "1 14 100%" }}
           variant="h6"
           id="tableTitle"
           component="div"
         >
-         <Button variant="contained"
-         onClick={() => onClick()} >
-        New course
-         </Button>
-         </Typography>
-         ) : null}
-         </Toolbar>
+          <Button variant="contained" onClick={() => onClick()}>
+            New course
+          </Button>
+        </Typography>
+      ) : null}
+    </Toolbar>
   );
-
-
-
-
-
-
-
-
 }
 
 const Course: React.FC = () => {
@@ -293,21 +272,14 @@ const Course: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [redirect, setRedirect] = React.useState<boolean>(false);
 
-
   const { GetAllCourse } = useActions();
   const { allCourse } = useTypedSelector((store) => store.CourseReducer);
   const navigate = useNavigate();
   const { course } = useTypedSelector((store) => store.CourseReducer);
- 
-
-  
-
-
 
   useEffect(() => {
     GetAllCourse();
   }, []);
-
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -362,9 +334,6 @@ const Course: React.FC = () => {
     setDense(event.target.checked);
   };
 
-
-
-
   const isSelected = (name: any) => selected.indexOf(name) !== -1;
 
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -418,10 +387,15 @@ const Course: React.FC = () => {
                       <TableCell align="right">{row.title}</TableCell>
                       <TableCell align="right">{row.description}</TableCell>
                       <TableCell align="right">{row.price}</TableCell>
-                      <TableCell align="right">{row.imagePath}</TableCell>
-                     
-                    
-                  
+                      <TableCell align="right">
+                        {
+                          <img
+                            src={`${row.imagePath}?w=161&fit=crop&auto=format`}
+                            alt="Image"
+                          />
+                        }
+                      </TableCell>
+                      <TableCell align="right">{row.categoryName}</TableCell>
                     </TableRow>
                   );
                 })}
