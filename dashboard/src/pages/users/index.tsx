@@ -162,6 +162,7 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
+    
   const { user } = useTypedSelector((store) => store.UserReducer);
   return (
     <TableHead>
@@ -225,14 +226,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     return <Navigate to="/dashboard/sign-up/" />;
   }
 
-
-
-
-
-
-
-
-
+ 
   return (
     
     <Toolbar

@@ -248,7 +248,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
         ></Typography>
       )}
 
-      {course.role === "Administrators" ? (
+      {user.role === "Administrators" ? (
         <Typography
           sx={{ flex: "1 14 100%" }}
           variant="h6"
@@ -291,6 +291,13 @@ const Course: React.FC = () => {
     setOrder(isAsc ? "desc" : "asc");
     setOrderBy(property);
   };
+
+  const handleEditClick = (row: any) => {
+    localStorage.setItem("updateUser", JSON.stringify(row));
+    navigate("/dashboard/editUser/");
+  };
+
+
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
@@ -398,6 +405,18 @@ const Course: React.FC = () => {
                         }
                       </TableCell>
                       <TableCell align="right">{row.categoryName}</TableCell>
+
+                      {user.role === "Administrators" ? (
+                        <TableCell align="right">
+                          <Button
+                            variant="outlined"
+                            onClick={() => handleEditClick(row)}
+                          >
+                            Edit
+                          </Button>
+                        </TableCell>
+                      ) : null}
+
                     </TableRow>
                   );
                 })}
