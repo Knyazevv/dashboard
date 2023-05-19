@@ -398,10 +398,11 @@ const Course: React.FC = () => {
                       <TableCell align="right">{row.price}</TableCell>
                       <TableCell align="right">
                         {
-                          <img
-                            src={`${row.imagePath}?w=161&fit=crop&auto=format`}
-                            alt="Image"
-                          />
+                         <img
+                         src={`${row.imagePath}`}
+                         alt="Image"
+                         style={{ width: "75px", height: "auto" }}
+                       />
                         }
                       </TableCell>
                       <TableCell align="right">{row.categoryName}</TableCell>
