@@ -4,37 +4,35 @@ import {
   Box,
   Button,
   Container,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   SelectChangeEvent,
   TextField,
   Typography,
 } from "@mui/material";
-import { RegisterSchema } from "../validation";
-import { useActions } from "../../../hooks/useActions";
-import { useTypedSelector } from "../../../hooks/useTypedSelector";
+
 import { Navigate } from "react-router-dom";
+import { useActions } from "../../hooks/useActions";
 
-const Register: React.FC = () => {
-  const [role, setRole] = useState("Users");
-  const { message } = useTypedSelector((store) => store.UserReducer);
-  const { IncertUser } = useActions();
 
-  console.log("message ", message);
 
-  if (message === "User successfully created.") {
-    return <Navigate to="/" />;
-  }
+
+const CreateCourse: React.FC = () => {
+  const [role, setRole] = useState("Course");
+//   const { message } = useTypedSelector((store) => store.Course);
+   const { IncertCourse } = useActions();
+
+//   console.log("message ", message);
+
+//   if (message === "Course successfully created.") {
+//     return <Navigate to="/" />;
+//   }
 
   const initialValues = {
-    email: "",
-    firstName: "",
-    lastName: "",
-    password: "",
-    phoneNumber: "",
-    confirmPassword: "",
+    title: "",
+    description: "",
+    price: "",
+    imagePath: "",
+    categoryId: "",
+    categoryName: "",
 
   };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -42,17 +40,17 @@ const Register: React.FC = () => {
 
     const data = new FormData(event.currentTarget);
 
-    const newUser = {
-      Name: data.get("firstName"),
-      Surname: data.get("lastName"),
-      Email: data.get("email"),
-      PhoneNumber: data.get("phone"),
-      Role: role,
-      Password: data.get("password"),
-      confirmPassword: data.get("confirmPassword"),
+    const newCourse = {
+        Title: data.get("title"),
+        Description: data.get("description"),
+        Price: data.get("price"),
+        ImagePath: data.get("imagePath"),    
+        CategoryId: data.get("categoryId"),
+        CategoryName: data.get("categoryName"),
     
     };
-    IncertUser(newUser);
+    console.log("new Course", newCourse)
+    IncertCourse(newCourse);
   };
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -74,7 +72,7 @@ const Register: React.FC = () => {
           <Formik
             onSubmit={() => {}}
             initialValues={initialValues}
-            validationSchema={RegisterSchema}
+            // validationSchema={RegisterSchema}
           >
             {({ errors, touched, isSubmitting, isValid, dirty }) => (
               <Box
@@ -84,57 +82,58 @@ const Register: React.FC = () => {
                 noValidate
               >
                 <Typography color="textPrimary" variant="h4">
-                  Create a new account
+                  New course
                 </Typography>
-                <Typography color="textSecondary" gutterBottom variant="body2">
+                {/* <Typography color="textSecondary" gutterBottom variant="body2">
                   Use your email to create a new account
-                </Typography>
-                {errors.firstName && touched.firstName ? (
+                </Typography> */}
+                {/* {errors.firstName && touched.firstName ? (
                   <div style={{ color: "red" }}>{errors.firstName}</div>
-                ) : null}
+                ) : null} */}
                 <Field
                   as={TextField}
                   fullWidth
-                  label="First Name"
+                  label="Title"
                   margin="normal"
-                  name="firstName"
+                  name="title"
                   variant="outlined"
                 />
-                {errors.lastName && touched.lastName ? (
+                {/* {errors.lastName && touched.lastName ? (
                   <div style={{ color: "red" }}>{errors.lastName}</div>
-                ) : null}
+                ) : null} */}
                 <Field
                   as={TextField}
                   fullWidth
-                  label="Last Name"
+                  label="Description"
                   margin="normal"
-                  name="lastName"
+                  name="description"
                   variant="outlined"
                 />
-                {errors.email && touched.lastName ? (
+                {/* {errors.email && touched.lastName ? (
                   <div style={{ color: "red" }}>{errors.email}</div>
-                ) : null}
+                ) : null} */}
                 <Field
                   as={TextField}
                   fullWidth
-                  label="Email Address"
+                  id="outlined-number"
+                  label="Number"
                   margin="normal"
-                  name="email"
-                  type="email"
+                  name="price"
+                  type="text"
                   variant="outlined"
                 />
 
                   <Field
                   as={TextField}
                   fullWidth
-                  label="Phone Number"
+                  label="ImagePath"
                   margin="normal"
-                  name="phone"
-                  type="phone"
+                  name="imagePath"
+                //   type="phone"
                   variant="outlined"
                 />
 
-                <FormControl sx={{ width: "100%" }}>
+                {/* <FormControl sx={{ width: "100%" }}>
                   <InputLabel>Role</InputLabel>
                   <Select
                     value={role}
@@ -145,31 +144,31 @@ const Register: React.FC = () => {
                     <MenuItem value={"Users"}>Users</MenuItem>
                     <MenuItem value={"Administrators"}>Administrators</MenuItem>
                   </Select>
-                </FormControl>
+                </FormControl> */}
 
                 
-                {errors.password && touched.password ? (
+                {/* {errors.password && touched.password ? (
                   <div style={{ color: "red" }}>{errors.password}</div>
-                ) : null}
+                ) : null} */}
                 <Field
                   as={TextField}
                   fullWidth
-                  label="Password"
+                  label="CategoryId"
                   margin="normal"
-                  name="password"
-                  type="password"
+                  name="categoryId"
+                //   type="password"
                   variant="outlined"
                 />
-                {errors.confirmPassword && touched.confirmPassword ? (
+                {/* {errors.confirmPassword && touched.confirmPassword ? (
                   <div style={{ color: "red" }}>{errors.confirmPassword}</div>
-                ) : null}
+                ) : null} */}
                 <Field
                   as={TextField}
                   fullWidth
-                  label="Confirm password"
+                  label="CategoryName"
                   margin="normal"
-                  name="confirmPassword"
-                  type="password"
+                  name="categoryName"
+                //   type="password"
                   variant="outlined"
                 />
                 <Box
@@ -199,4 +198,4 @@ const Register: React.FC = () => {
     </>
   );
 };
-export default Register;
+export default CreateCourse;

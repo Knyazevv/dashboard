@@ -26,5 +26,15 @@ namespace Compass.Core.Entities.Specification
                     .Where(c => c.CategoryId == categoryId);
             }
         }
+
+
+        public class Update : Specification<Course>
+        {
+            public Update()
+            {
+                Query.Include(x => x.Category);
+            }
+        }
+
     }
 }

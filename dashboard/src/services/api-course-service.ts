@@ -112,9 +112,27 @@ instance.interceptors.request.use(
 
   const Course = {  
       GetAll: () => request.get("/courses"),
-      // GetCurses: () => request.post("/getcourses"),
-      // GetProfile: (id: string) => request.get("/profile?courseId=" + id)
+      Edit: (course: any) => request.post("/editcourse", course),
+      Incert: (course: any) => request.post("/createCourse", course),
+      
   };
+
+
+
+  export async function Incert(course: any) {
+    const data = await Course.Incert(course)
+      .then((response) => {
+        return { response };
+      })
+      .catch((error) => {
+        return error.response;
+      });
+    return data;
+  }
+  
+
+
+
 
 export async function GetAll() {
   const data = await Course.GetAll()
@@ -128,24 +146,13 @@ return data;
 }
 
 
-  // export async function GetCurses() {
-  //   const data = await Course.GetCurses()
-  //     .then((response) => {
-  //       return { response };
-  //     })
-  //     .catch((error) => {
-  //       return error.response;
-  //     });
-  //   return data;
-  // }
-  
-  // export async function GetProfile(id: string) {
-  //   const data = await Course.GetProfile(id)
-  //     .then((response) => {
-  //       return { response };
-  //     })
-  //     .catch((error) => {
-  //       return error.response;
-  //     });
-  //   return data;
-  // }
+export async function Edit(course: any) {
+  const data = await Course.Edit(course)
+    .then((response) => {
+      return { response };
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  return data;
+}

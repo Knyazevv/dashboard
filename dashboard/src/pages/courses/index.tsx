@@ -213,7 +213,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
     setRedirect(true);
   };
   if (redirect) {
-    return <Navigate to="/dashboard/sign-up/" />;
+    return <Navigate to="/dashboard/createCourse/" />;
   }
   return (
     <Toolbar
@@ -250,7 +250,7 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
 
       {user.role === "Administrators" ? (
         <Typography
-          sx={{ flex: "1 14 100%" }}
+          sx={{ flex: "1 10 100%" }}
           variant="h6"
           id="tableTitle"
           component="div"
@@ -293,8 +293,8 @@ const Course: React.FC = () => {
   };
 
   const handleEditClick = (row: any) => {
-    localStorage.setItem("updateUser", JSON.stringify(row));
-    navigate("/dashboard/editUser/");
+    localStorage.setItem("updateCourse", JSON.stringify(row));
+    navigate("/dashboard/editcourse/");
   };
 
 

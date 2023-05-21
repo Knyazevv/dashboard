@@ -10,6 +10,6 @@ namespace Compass.Core.Interfaces
 {
     public interface ICategoryService
     {
-        Task<List<CourseDto>> GetAll();
+        Task<List<CategoryDto>> GetAll();
     }
 }

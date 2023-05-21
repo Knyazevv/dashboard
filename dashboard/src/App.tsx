@@ -12,6 +12,8 @@ import Profile from "./pages/profile";
 import ConfirmEmail from "./pages/confirmEmail";
 import EditUser from "./pages/editUser";
 import Course from "./pages/courses";
+import EditCourse from "./pages/editCourse";
+import CreateCourse from "./pages/createCourse";
 
 
 
@@ -30,6 +32,8 @@ const App: React.FC = () => {
               <Route path="profile" element={<Profile />} />
               <Route path="edituser" element={<EditUser />} />
               <Route path="courses" element={<Course />} />
+              <Route path="editcourse" element={<EditCourse />} />
+              <Route path="createCourse" element={<CreateCourse />} />
             </Route>
           )}
           {user.role === "Users" && (

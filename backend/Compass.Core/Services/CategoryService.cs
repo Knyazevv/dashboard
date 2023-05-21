@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Compass.Core.DTO_s;
 using Compass.Core.Entities;
-using Compass.Core.Entities.Specification;
 using Compass.Core.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -14,17 +13,16 @@ namespace Compass.Core.Services
     public class CategoryService : ICategoryService
     {
         private readonly IRepository<Category> _categoryRepo;
-        private readonly IRepository<Course> _courseRepo;
         private readonly IMapper _mapper;
         public CategoryService(IRepository<Category> categoryRepo, IMapper mapper)
         {
             _categoryRepo = categoryRepo;
             _mapper = mapper;
         }
-        public async Task<List<CourseDto>> GetAll()
+        public async Task<List<CategoryDto>> GetAll()
         {
-            var result = await _courseRepo.GetListBySpec(new Courses.GetAll());
-            return _mapper.Map<List<CourseDto>>(result);
+            var result = await _categoryRepo.GetAll();
+            return _mapper.Map<List<CategoryDto>>(result);
         }
     }
 }
