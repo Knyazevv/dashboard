@@ -10,6 +10,7 @@ export interface CourseState {
     START_REQUEST = "START_REQUEST",
     ALL_COURSE_LOADED = "ALL_COURSE_LOADED",  
     FINISH_REQUEST = "FINISH_REQUEST",   
+    COURSE_UPDATED = "COURSE_UPDATED",
   }
 
 
@@ -31,9 +32,16 @@ export interface CourseState {
   }
   
 
+  interface CourseEditedAction {
+    type: CourseActionType.COURSE_UPDATED;
+    payload: any;
+  }
+
+
   export type CourseActions =
    
   | StartRequestAction
+  | CourseEditedAction
   | AllCourseLoadedAction
   | FinishRequestAction;
   

@@ -14,6 +14,7 @@ namespace Compass.Core.AutoMapper
         public AutoMapperCourseProfile()
         {
             CreateMap<CourseDto, Course>().ReverseMap();
+            CreateMap<UpdateCourseDto, Course>().ReverseMap();
         }
     }
 }

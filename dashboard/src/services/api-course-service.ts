@@ -113,7 +113,7 @@ instance.interceptors.request.use(
   const Course = {  
       GetAll: () => request.get("/courses"),
       Edit: (course: any) => request.post("/editcourse", course),
-      Incert: (course: any) => request.post("/createCourse", course),
+      Incert: (course: any) => request.post("/createcourse", course),
       
   };
 
@@ -147,6 +147,7 @@ return data;
 
 
 export async function Edit(course: any) {
+  console.log("Course",Course)
   const data = await Course.Edit(course)
     .then((response) => {
       return { response };

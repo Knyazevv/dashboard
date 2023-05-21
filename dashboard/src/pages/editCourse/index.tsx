@@ -15,18 +15,16 @@ import {
   import { Navigate } from "react-router-dom";
   
   const initialProfileValues = {
+    Id: "",
     title: "",
     description: "",
     price: "",
- 
+    
   };
-  
-  
-  
   
   const EditCourse: React.FC = () => {
     const [block, setBlock] = React.useState(true);
-    const { EditCourse,   } = useActions();
+    const { EditCourse } = useActions();
   
   
     let selectedCourse = localStorage.getItem("updateCourse");
@@ -36,16 +34,11 @@ import {
   
     let updateCourse = JSON.parse(selectedCourse);
   
+ 
     initialProfileValues.title = updateCourse.title;
     initialProfileValues.description = updateCourse.description;
     initialProfileValues.price = updateCourse.price;
- 
-  
-  
-  
-    const handleBlock = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setBlock(event.target.checked);
-    };
+    
   
   
     const changeProfile = (event: React.FormEvent<HTMLFormElement>) => {
@@ -55,12 +48,14 @@ import {
   
   
       const updatedCourse = {
+        Id: updateCourse.id,
         Title: data.get("title"),
         Description: data.get("description"),
         Price: data.get("price"),
-
+        
   
       };
+      console.log("updatedCourse", updatedCourse);
       EditCourse(updatedCourse);
     };
   

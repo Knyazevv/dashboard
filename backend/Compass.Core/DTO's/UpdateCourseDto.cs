@@ -8,7 +8,7 @@ namespace Compass.Core.DTO_s
 {
     public class UpdateCourseDto
     {
-        public string Id { get; set; } = string.Empty;
+        public int Id { get; set; } 
         public string Title { get; set; } = string.Empty;
         public string Description { get; set; } = string.Empty;
         public string Price { get; set; } = string.Empty;

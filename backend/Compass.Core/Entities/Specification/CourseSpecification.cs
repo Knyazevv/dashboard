@@ -28,13 +28,6 @@ namespace Compass.Core.Entities.Specification
         }
 
 
-        public class Update : Specification<Course>
-        {
-            public Update()
-            {
-                Query.Include(x => x.Category);
-            }
-        }
 
     }
 }

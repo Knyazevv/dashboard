@@ -66,7 +66,7 @@ namespace Compass.Core.Services
             return _mapper.Map<List<CourseDto>>(result);
         }
 
-        public async Task Update(CourseDto course)
+        public async Task Update(UpdateCourseDto course)
         {
             await _courseRepo.Update(_mapper.Map<Course>(course));
             await _courseRepo.Save();

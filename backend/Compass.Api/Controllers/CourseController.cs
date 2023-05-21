@@ -1,14 +1,17 @@
 ﻿using Compass.Core.DTO_s;
+using Compass.Core.Entities;
 using Compass.Core.Interfaces;
 using Compass.Core.Services;
 using Compass.Core.Validation.Course;
 using Compass.Core.Validation.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Configuration;
 
 namespace Compass.Api.Controllers
 {
@@ -66,6 +69,24 @@ namespace Compass.Api.Controllers
                 return BadRequest(validatinResult.Errors);
             }
         }
+
+
+        [HttpPost("editcourse")]
+        public async Task<IActionResult> Update([FromBody] UpdateCourseDto model)
+        {
+            var validator = new UpdateCourseValidation();
+            var validationResult = await validator.ValidateAsync(model);
+            if (validationResult.IsValid)
+            {
+                await _coursesService.Update(model);
+                return Ok("Updated.");
+            }
+            return BadRequest(validationResult.Errors);
+        }
+
+
+
+       
     }
 
 }
