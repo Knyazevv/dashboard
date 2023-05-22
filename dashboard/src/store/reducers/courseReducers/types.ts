@@ -1,47 +1,32 @@
 export interface CourseState {
-    allCourse: any;
-    loading: boolean;
-    message: string;    
-    course: any;
- 
-  }
-  
-  export enum CourseActionType {
-    START_REQUEST = "START_REQUEST",
-    ALL_COURSE_LOADED = "ALL_COURSE_LOADED",  
-    FINISH_REQUEST = "FINISH_REQUEST",   
-    COURSE_UPDATED = "COURSE_UPDATED",
-  }
+  allCourses: any;
+  loading: boolean;
+  message: string;
+  isAuth: boolean;
+  selectedCourse: any;
+}
 
+export enum CourseActionType {
+  START_REQUEST = "START_REQUEST",
+  ALL_COURSES_LOADED = "ALL_COURSES_LOADED",
+  FINISH_REQUEST = "FINISH_REQUEST",
+}
 
-  interface StartRequestAction {
-    type: CourseActionType.START_REQUEST;
-  }
-  
-  
-  interface AllCourseLoadedAction {
-    type: CourseActionType.ALL_COURSE_LOADED;
-    payload: any;
-  }
-  
+interface StartRequestAction {
+  type: CourseActionType.START_REQUEST;
+}
 
-  
-  interface FinishRequestAction {
-    type: CourseActionType.FINISH_REQUEST;
-    payload: any;
-  }
-  
+interface FinishRequestAction {
+  type: CourseActionType.FINISH_REQUEST;
+  payload: any;
+}
 
-  interface CourseEditedAction {
-    type: CourseActionType.COURSE_UPDATED;
-    payload: any;
-  }
+interface AllUsersLoadedAction {
+  type: CourseActionType.ALL_COURSES_LOADED;
+  payload: any;
+}
 
-
-  export type CourseActions =
-   
+export type CourseActions =
+  | FinishRequestAction
   | StartRequestAction
-  | CourseEditedAction
-  | AllCourseLoadedAction
-  | FinishRequestAction;
-  
+  | AllUsersLoadedAction;

@@ -1,17 +1,14 @@
 ﻿using Compass.Core.DTO_s;
-using Compass.Core.Entities;
 using Compass.Core.Interfaces;
-using Compass.Core.Services;
+using Compass.Core.Services.User;
 using Compass.Core.Validation.Course;
 using Compass.Core.Validation.Token;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Configuration;
 
 namespace Compass.Api.Controllers
 {
@@ -20,33 +17,56 @@ namespace Compass.Api.Controllers
     [ApiController]
     public class CourseController : ControllerBase
     {
-        private readonly ICourseService _coursesService;
+        private readonly ICourseService _courseService;
         private readonly UserService _userService;
-        public CourseController(ICourseService coursesService, UserService userService)
+        public CourseController(ICourseService courseService, UserService userService)
         {
-            _coursesService = coursesService;
+            _courseService = courseService;
             _userService = userService;
         }
+
 
         [AllowAnonymous]
         [HttpGet("courses")]
         public async Task<IActionResult> Index()
         {
-            var result = await _coursesService.GetAll();
+            var result = await _courseService.GetAll();
             return Ok(result);
         }
 
-        [HttpPost("createCourse")]
+
+
+        [HttpPost("create")]
         public async Task<IActionResult> Create(CourseDto model)
         {
             var validator = new AddCourseValidation();
             var validationResult = await validator.ValidateAsync(model);
             if (validationResult.IsValid)
             {
-                await _coursesService.Create(model);
-                return Ok("Created.");
+                return Ok(await _courseService.Create(model));
             }
             return BadRequest(validationResult.Errors);
+        }
+        [HttpPost("delete")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var result = await _courseService.Delete(id);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Errors);
+        }
+
+        [HttpPost("update")]
+        public async Task<IActionResult> Update(CourseDto model)
+        {
+            var result = await _courseService.Update(model);
+            if (result.Success)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result.Errors);
         }
 
         [AllowAnonymous]
@@ -69,24 +89,6 @@ namespace Compass.Api.Controllers
                 return BadRequest(validatinResult.Errors);
             }
         }
-
-
-        [HttpPost("editcourse")]
-        public async Task<IActionResult> Update([FromBody] UpdateCourseDto model)
-        {
-            var validator = new UpdateCourseValidation();
-            var validationResult = await validator.ValidateAsync(model);
-            if (validationResult.IsValid)
-            {
-                await _coursesService.Update(model);
-                return Ok("Updated.");
-            }
-            return BadRequest(validationResult.Errors);
-        }
-
-
-
-       
     }
 
 }

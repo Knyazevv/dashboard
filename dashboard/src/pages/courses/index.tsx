@@ -1,3 +1,4 @@
+import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { alpha } from "@mui/material/styles";
 import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
@@ -13,39 +14,24 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { visuallyHidden } from "@mui/utils";
-import { useTypedSelector } from "../../hooks/useTypedSelector";
-import Button from "@mui/material/Button";
-import { Navigate, useNavigate } from "react-router-dom";
 import { useActions } from "../../hooks/useActions";
+import { Button, Link } from "@mui/material";
+import { Navigate, useNavigate } from "react-router-dom";
 
 interface Data {
-  id: string;
+  id: number;
   title: string;
   description: string;
   price: string;
   imagePath: string;
   categoryName: string;
-}
-
-function createData(
-  id: string,
-  title: string,
-  description: string,
-  price: string,
-  imagePath: string,
-  categoryName: string
-): Data {
-  return {
-    id,
-    title,
-    description,
-    price,
-    imagePath,
-    categoryName,
-  };
+  action: string;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -95,6 +81,12 @@ interface HeadCell {
 }
 
 const headCells: readonly HeadCell[] = [
+  // {
+  //   id: "id",
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: "Id",
+  // },
   {
     id: "title",
     numeric: true,
@@ -117,7 +109,7 @@ const headCells: readonly HeadCell[] = [
     id: "imagePath",
     numeric: true,
     disablePadding: false,
-    label: "Image Path",
+    label: "Image",
   },
   {
     id: "categoryName",
@@ -137,6 +129,7 @@ interface EnhancedTableProps {
   order: Order;
   orderBy: string;
   rowCount: number;
+  user: any;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -146,32 +139,29 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     orderBy,
     numSelected,
     rowCount,
+    user,
     onRequestSort,
   } = props;
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
-  const { course } = useTypedSelector((store) => store.CourseReducer);
-  const { user } = useTypedSelector((store) => store.UserReducer);
+
   return (
     <TableHead>
-   <TableRow>
+      <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
             color="primary"
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{
-              "aria-label": "select all desserts",
-            }}
           />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.numeric ? "left" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -189,11 +179,9 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        {user.role === "Administrators" ? (
-          <TableCell align="right">
-            <Box>Edit</Box>
-          </TableCell>
-        ) : null}
+        {user.role === "Administrators" && (
+          <TableCell key={"action"}>Action</TableCell>
+        )}
       </TableRow>
     </TableHead>
   );
@@ -201,26 +189,19 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  user: any;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
-  const { user } = useTypedSelector((store) => store.UserReducer);
-  const [redirect, setRedirect] = React.useState<boolean>(false);
-  const { course } = useTypedSelector((store) => store.CourseReducer);
-  
-  const onClick = () => {
-    setRedirect(true);
-  };
-  if (redirect) {
-    return <Navigate to="/dashboard/createCourse/" />;
-  }
+
   return (
     <Toolbar
-  
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
+        display: "flex",
+        justifyContent: "space-around",
         ...(numSelected > 0 && {
           bgcolor: (theme) =>
             alpha(
@@ -240,47 +221,28 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        ></Typography>
-      )}
-
-      {user.role === "Administrators" ? (
-        <Typography
-          sx={{ flex: "1 10 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          <Button variant="contained" onClick={() => onClick()}>
-            New course
-          </Button>
+        <Typography sx={{ mt: 3 }} variant="h4" id="tableTitle" component="div">
+          Courses
         </Typography>
-      ) : null}
+      )}
     </Toolbar>
   );
 }
 
-const Course: React.FC = () => {
+const Courses: React.FC = () => {
   const [order, setOrder] = React.useState<Order>("asc");
   const [orderBy, setOrderBy] = React.useState<keyof Data>("title");
   const [selected, setSelected] = React.useState<readonly string[]>([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [redirect, setRedirect] = React.useState<boolean>(false);
 
-  const { GetAllCourse } = useActions();
-  const { allCourse } = useTypedSelector((store) => store.CourseReducer);
-  const navigate = useNavigate();
-  const { course } = useTypedSelector((store) => store.CourseReducer);
-  const { user } = useTypedSelector((store) => store.UserReducer);
+  const { allCourses } = useTypedSelector((state) => state.CourseReducer);
+  const { user } = useTypedSelector((state) => state.UserReducer);
 
+  const { GetAllCourses } = useActions();
   useEffect(() => {
-    GetAllCourse();
+    GetAllCourses();
   }, []);
 
   const handleRequestSort = (
@@ -292,28 +254,21 @@ const Course: React.FC = () => {
     setOrderBy(property);
   };
 
-  const handleEditClick = (row: any) => {
-    localStorage.setItem("updateCourse", JSON.stringify(row));
-    navigate("/dashboard/editcourse/");
-  };
-
-
-
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = allCourse.map((n: any) => n.email);
+      const newSelected = allCourses.map((n: any) => n.name);
       setSelected(newSelected);
       return;
     }
     setSelected([]);
   };
 
-  const handleClick = (event: React.MouseEvent<unknown>, title: any) => {
-    const selectedIndex = selected.indexOf(title);
+  const handleClick = (event: React.MouseEvent<unknown>, name: any) => {
+    const selectedIndex = selected.indexOf(name);
     let newSelected: readonly string[] = [];
 
     if (selectedIndex === -1) {
-      newSelected = newSelected.concat(selected, title);
+      newSelected = newSelected.concat(selected, name);
     } else if (selectedIndex === 0) {
       newSelected = newSelected.concat(selected.slice(1));
     } else if (selectedIndex === selected.length - 1) {
@@ -345,15 +300,34 @@ const Course: React.FC = () => {
 
   const isSelected = (name: any) => selected.indexOf(name) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - allCourse.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - allCourses.length) : 0;
 
+  const navigate = useNavigate();
+
+  const onEditClick = (event: React.MouseEvent<unknown>, row: any) => {
+    window.localStorage.setItem("selectedCourse", JSON.stringify(row));
+    navigate("update");
+  };
+
+  const onAddClick = (event: React.MouseEvent<unknown>) => {
+    console.log("add");
+    navigate("add");
+  };
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} user={user} />
         <TableContainer>
+          {user.role === "Administrators" && (
+            <Button
+              onClick={onAddClick}
+              variant="contained"
+              sx={{ width: "98%", m: "auto", display: "flex", mt: 4, mb: 3 }}
+            >
+              Create a new course
+            </Button>
+          )}
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -365,10 +339,11 @@ const Course: React.FC = () => {
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={allCourse.length}
+              rowCount={allCourses.length}
+              user={user}
             />
             <TableBody>
-              {stableSort(allCourse, getComparator(order, orderBy))
+              {stableSort(allCourses, getComparator(order, orderBy))
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
                   const isItemSelected = isSelected(row.title);
@@ -393,31 +368,29 @@ const Course: React.FC = () => {
                           }}
                         />
                       </TableCell>
-                      <TableCell align="right">{row.title}</TableCell>
-                      <TableCell align="right">{row.description}</TableCell>
-                      <TableCell align="right">{row.price}</TableCell>
-                      <TableCell align="right">
+                      <TableCell align="left">{row.title}</TableCell>
+                      <TableCell align="left">{row.description}</TableCell>
+                      <TableCell align="left">{row.price}</TableCell>
+                      <TableCell align="left">
                         {
-                         <img
-                         src={`${row.imagePath}`}
-                         alt="Image"
-                         style={{ width: "75px", height: "auto" }}
-                       />
+                          <img
+                            src={`${row.imagePath}`}
+                            alt="Image"
+                            width="50px"
+                          />
                         }
                       </TableCell>
-                      <TableCell align="right">{row.categoryName}</TableCell>
-
-                      {user.role === "Administrators" ? (
-                        <TableCell align="right">
+                      <TableCell align="left">{row.categoryName}</TableCell>
+                      <TableCell align="left">
+                        {user.role === "Administrators" && (
                           <Button
+                            onClick={(event) => onEditClick(event, row)}
                             variant="outlined"
-                            onClick={() => handleEditClick(row)}
                           >
                             Edit
                           </Button>
-                        </TableCell>
-                      ) : null}
-
+                        )}
+                      </TableCell>
                     </TableRow>
                   );
                 })}
@@ -436,7 +409,7 @@ const Course: React.FC = () => {
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
-          count={allCourse.length}
+          count={allCourses.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
@@ -451,4 +424,4 @@ const Course: React.FC = () => {
   );
 };
 
-export default Course;
+export default Courses;

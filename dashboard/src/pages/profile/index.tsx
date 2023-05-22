@@ -1,272 +1,375 @@
-import React from "react";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  Divider,
-  Grid,
-  TextField,
-} from "@mui/material";
-import { Field, Formik } from "formik";
-import { useActions } from "../../hooks/useActions";
-import { useTypedSelector } from "../../hooks/useTypedSelector";
-import { ChangePasswordSchema, ChangeProfileSchema } from "../auth/validation";
-import { Navigate, useNavigate } from "react-router-dom";
+import * as React from 'react';
+import Typography from '@mui/material/Typography';
+import Grid from '@mui/material/Grid';
+import TextField from '@mui/material/TextField';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+import { Button, Link, Box, ThemeProvider, Container, createTheme, Avatar, CssBaseline, Switch } from '@mui/material';
+import { Field, Formik } from 'formik';
+import { UpdateProfileSchema, UpdatePasswordSchema } from './validation';
+import { useActions } from '../../hooks/useActions';
+import { useTypedSelector } from '../../hooks/useTypedSelector';
+import { useEffect, useState } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import { getSelectedUser, Logout } from '../../services/api-user-service';
+import { useNavigate } from "react-router-dom";
+
+const initialValues = { id: "", firstName: "", lastName: "", email: "", phoneNumber: "", currentPassword: "", newPassword: "", confirmNewPassword: "" };
+
+const theme = createTheme();
 
 
-const changePasswordValues = {
-  oldPassword: "",
-  currentPassword: "",
-  confirmPassword: "",
-};
-
-const changeProfileValues = {
-  name: "",
-  surname: "",
-  email: "",
-  phone: "",
-};
-
-const Profile: React.FC<any> = () => {
-
-  const { user } = useTypedSelector((store) => store.UserReducer);
-  const { message } = useTypedSelector((store) => store.UserReducer);
-
-  const { ChangeUserPassword, UpdateProfile } = useActions();
-  const navigate = useNavigate();
-  const [changePassword, setChangePassword] = React.useState(false);
-
- 
+const Profile: React.FC = () => {
   
-  changeProfileValues.name = user.Name;
-  changeProfileValues.surname = user.Surname;
-  changeProfileValues.email = user.Email;
-  changeProfileValues.phone = user.PhoneNumber;
+  
+  const selectedUser = getSelectedUser();
+  const navigate = useNavigate();
+  const {UpdateProfile, BlockUnblock} = useActions();
+  const { user } = useTypedSelector((state) => state.UserReducer);
+  const {DeleteUser, LogOut, ResetPassword} = useActions();
 
-  const ChangePasswordSubmit = (
-    event: React.FormEvent<HTMLFormElement>
-  ) => {
-    event.preventDefault();
-
-    const data = new FormData(event.currentTarget);
-
-    const updatedUser = {
-      Id: user.Id,
-      OldPassword: data.get("oldPassword"),
-      NewPassword: data.get("currentPassword"),
-      ConfirmPassword: data.get("confirmPassword"),
-    };
-
-    ChangeUserPassword(updatedUser);
-  };
-
-  const changeProfileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-
-    const data = new FormData(event.currentTarget);
-    const name = data.get("name");
-    const surname = data.get("surname");
-    const email = data.get("email");
-    const phone = data.get("phone");
-
-    const updatedUser = {
-      Id: user.Id,
-      Name: name,
-      Surname: surname,
-      PhoneNumber: phone,
-      Email: email,
-    };
-   
-    UpdateProfile(updatedUser);
-  };
-
-  if (message === "Profile updated!" || message === "Password changed.") {
-    navigate("/dashboard");
+  if(selectedUser == null)
+  {
+    navigate("/dashboard/users");
   }
+  const updateUser = JSON.parse(selectedUser);
+  console.log("updateUser: ", updateUser);
+  console.log("user: ", user);
 
-  return (
-    <>
-      <Formik
-        initialValues={changeProfileValues}
-        onSubmit={() => {}}
-        validationSchema={ChangeProfileSchema}
-      >
-        {({ errors, touched, isSubmitting, isValid }) => (
-          <Card>
-            <Box
-              onSubmit={changeProfileSubmit}
-              component="form"
-              noValidate
-              style={{ width: "100%" }}
-              sx={{ mt: 1 }}
-            >
-              <CardHeader
-                subheader="The information can be edited"
-                title="Profile"
-              />
-              <Divider />
-              <CardContent>
-                <Grid container spacing={3}>
-                  <Grid item md={6} xs={12}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      label={"First Name"}
-                      name="name"
-                      variant="outlined"
-                      required
-                    />
-                    {errors.name && touched.name ? (
-                      <div style={{ color: "red" }}>{errors.name}</div>
-                    ) : null}
-                  </Grid>
-                  <Grid item md={6} xs={12}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      label="Last name"
-                      name="surname"
-                      required
-                      variant="outlined"
-                    />
-                    {errors.surname && touched.surname ? (
-                      <div style={{ color: "red" }}>{errors.surname}</div>
-                    ) : null}
-                  </Grid>
-                  <Grid item md={6} xs={12}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      label="Email Address"
-                      name="email"
-                      required
-                      variant="outlined"
-                    />
-                    {errors.email && touched.email ? (
-                      <div style={{ color: "red" }}>{errors.email}</div>
-                    ) : null}
-                  </Grid>
-                  <Grid item md={6} xs={12}>
-                    <Field
-                      as={TextField}
-                      fullWidth
-                      label="Phone Number"
-                      name="phone"
-                      required
-                      variant="outlined"
-                    />
-                    {errors.phone && touched.phone ? (
-                      <div style={{ color: "red" }}>{errors.email}</div>
-                    ) : null}
-                  </Grid>
-                </Grid>
-              </CardContent>
-              <Divider />
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  p: 2,
-                }}
-              >
-                <Button
-                  color="primary"
-                  disabled={!isValid}
-                  type="submit"
-                  variant="contained"
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const model = {
+      Id: data.get("id"),
+      Name: data.get("firstName"),
+      Surname: data.get("lastName"),
+      Email: data.get("email"),
+      PhoneNumber: data.get("phoneNumber"),
+    };
+    UpdateProfile(model);
+     if(updateUser.id === user.Id)
+    {
+      LogOut(updateUser.id);
+      navigate("/dashboard/users");
+    }
+    else {navigate("/")}
+  };
+  
+
+  const dangerZoneSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if(user.Id != updateUser.id)
+    {
+        DeleteUser(updateUser.id);
+        navigate("/dashboard/users");
+    }
+    else
+    {
+        toast.error('You cannot delete yourself!', {position: toast.POSITION.TOP_RIGHT});
+    }
+  };
+  const updatePasswordSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const updatePasswordData = {
+        Email: updateUser.email,
+        CurrentPassword: data.get("currentPassword"),
+        NewPassword: data.get("newPassword"),
+        ConfirmNewPassword: data.get("confirmNewPassword"),
+    }
+    ResetPassword(updatePasswordData);
+    if(updateUser.id === user.Id)
+    {
+      LogOut(updateUser.id);
+      navigate("/");
+    }
+    navigate("/dashboard/users");
+  };
+    initialValues.id = updateUser.id;
+   initialValues.firstName = updateUser.name;
+   initialValues.lastName = updateUser.surname;
+   initialValues.email = updateUser.email;
+   initialValues.phoneNumber = updateUser.phoneNumber;
+   
+   const onBlockClick = (event: React.MouseEvent<unknown>, userId: string) =>
+   {
+        console.log("User id: ", userId);
+        BlockUnblock(userId);
+   }
+
+    return (
+      <ThemeProvider theme={theme}>
+        <Container maxWidth={false}>
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 3,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              background: "white",
+              border: "2px white solid",
+              borderRadius: "15px",
+            }}>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={UpdateProfileSchema}
+              onSubmit={() => {}}>
+              {({ errors, touched, isSubmitting, isValid, dirty }) => (
+                <Box
+                  component="form"
+                  onSubmit={handleSubmit}
+                  noValidate
+                  sx={{m:"auto", width: "95%", mb:2}}
                 >
-                  {isSubmitting ? "Loading" : " Save details"}
-                </Button>
-              </Box>
-            </Box>
-          </Card>
-        )}
-      </Formik>
-      <Formik
-        initialValues={changePasswordValues}
-        onSubmit={() => {}}
-        validationSchema={ChangePasswordSchema}
-      >
-        {({ errors, touched, isSubmitting, isValid, dirty }) => (
-          <Card>
-            <Box
-              onSubmit={ChangePasswordSubmit}
-              style={{ width: "100%" }}
-              component="form"
-              noValidate
-              sx={{ mt: 1 }}
-            >
-              <CardHeader subheader="Update password" title="Password" />
-              <Divider />
-              <CardContent>
-                <Grid>
+                
+
+                <Grid
+                  sx={{padding:0, display:"flex", flexDirection:"column", justifyContent:"space-evenly", alignItems:"center" }}>
+                    <Typography component="h1" variant="h5" sx={{mt:2, fontWeight: "500"}}>
+                        Update profile
+                    </Typography>
+                  <Grid sx={{width:"100%"}}>
                   <Field
-                    as={TextField}
-                    fullWidth
-                    label="Old password"
-                    margin="normal"
-                    name="oldPassword"
-                    type="password"
-                    variant="outlined"
-                  />
-                  {errors.oldPassword && touched.oldPassword ? (
-                    <div style={{ color: "red" }}>{errors.oldPassword}</div>
-                  ) : null}
+                      margin="normal"
+                      id="id"
+                      name="id"
+                      type="hidden"
+                      value={updateUser.id}
+                    />
+                  </Grid>
+                  <Grid sx={{width:"60%"}}>
+                  <Field
+                      as={TextField}
+                      margin="normal"
+                      fullWidth
+                      label="First name"
+                      name="firstName"
+                      type="text"
+                    />
+                    {errors.firstName && touched.firstName ? (
+                      <div style={{ color: "red", width:"45%", float:"left" }}>{errors.firstName}</div>
+                    ) : null}
+                  </Grid> 
+                  <Grid sx={{width:"60%"}}>
+                    <Field
+                      as={TextField}
+                      margin="normal"
+                      fullWidth
+                      name="lastName"
+                      label="Last name"
+                      type="text"
+                    />
+                      {errors.lastName && touched.lastName ? (
+                        <div style={{ color: "red" }}>{errors.lastName}</div>
+                      ) : null}
+                    </Grid>
+                  <Grid sx={{width:"60%"}}>
+                    <Field
+                      as={TextField}
+                      margin="normal"
+                      fullWidth
+                      label="Email address"
+                      name="email"
+                      type="text"
+                    />
+                      {errors.email && touched.email ? (
+                        <div style={{ color: "red" }}>{errors.email}</div>
+                      ) : null}
+                  </Grid>
+    
+                  <Grid sx={{width:"60%"}}>
+                    <Field
+                      as={TextField}
+                      margin="normal"
+                      fullWidth
+                      label="Phone number"
+                      name="phoneNumber"
+                      type="text"
+                    />
+                      {errors.phoneNumber && touched.phoneNumber ? (
+                        <div style={{ color: "red" }}>{errors.phoneNumber}</div>
+                      ) : null}
+                  </Grid>
+                  <Grid sx={{width: "45%"}}>
+                    <Button
+                      disabled={!(isValid && dirty)}
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      sx={{ my:4}}
+                    >
+                      {isSubmitting ? "Loading" : "Edit"}
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Field
-                  as={TextField}
-                  fullWidth
-                  label="Password"
-                  margin="normal"
-                  name="currentPassword"
-                  type="password"
-                  variant="outlined"
-                  autoComplete="currentPassword"
-                />
-                {errors.currentPassword && touched.currentPassword ? (
-                  <div style={{ color: "red" }}>{errors.currentPassword}</div>
-                ) : null}
-                <Field
-                  as={TextField}
-                  fullWidth
-                  label="Confirm password"
-                  margin="normal"
-                  name="confirmPassword"
-                  type="password"
-                  variant="outlined"
-                  autoComplete="confirmPassword"
-                />
-                {errors.confirmPassword && touched.confirmPassword ? (
-                  <div style={{ color: "red" }}>{errors.confirmPassword}</div>
-                ) : null}
-              </CardContent>
-              <Divider />
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  p: 2,
-                }}
-              >
-                <Button
-                 onClick={() => {
-                  setChangePassword(!changePassword);
-                }}
-                  disabled={!(isValid && dirty)}
-                  type="submit"
-                  color="primary"
-                  variant="contained"
+                </Box>
+              )}
+            </Formik>
+          </Box>
+        </Container>
+
+        <Container maxWidth={false}>
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 3,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              background: "white",
+              border: "2px white solid",
+              borderRadius: "15px",
+            }}>
+            <Formik
+              initialValues={initialValues}
+              validationSchema={UpdatePasswordSchema}
+              onSubmit={() => {}}>
+              {({ errors, touched, isSubmitting, isValid, dirty }) => (
+                <Box
+                  component="form"
+                  onSubmit={updatePasswordSubmit}
+                  noValidate
+                  sx={{m:"auto", width: "95%", mb:2}}
                 >
-                  {isSubmitting ? "Loading" : "Update"}
+                
+
+                <Grid
+                  sx={{padding:0, display:"flex", flexDirection:"column", justifyContent:"space-evenly", alignItems:"center" }}>
+                    <Typography component="h1" variant="h5" sx={{mt:2, fontWeight: "500"}}>
+                        Update password
+                    </Typography>
+                  <Grid sx={{width:"100%"}}>
+                  <Field
+                      margin="normal"
+                      id="id"
+                      name="id"
+                      type="hidden"
+                      value={updateUser.id}
+                    />
+                  </Grid>
+                  <Grid sx={{width:"50%"}}>
+                  <Field
+                      as={TextField}
+                      margin="normal"
+                      fullWidth
+                      label="Current password"
+                      name="currentPassword"
+                      type="password"
+                    />
+                    {errors.currentPassword && touched.currentPassword ? (
+                      <div style={{ color: "red", width:"45%", float:"left" }}>{errors.currentPassword}</div>
+                    ) : null}
+                  </Grid> 
+                  <Grid sx={{width:"50%"}}>
+                    <Field
+                     as={TextField}
+                     margin="normal"
+                     fullWidth
+                     label="New password"
+                     name="newPassword"
+                     type="password"/>
+                    
+                      {errors.newPassword && touched.newPassword ? (
+                        <div style={{ color: "red" }}>{errors.newPassword}</div>
+                      ) : null}
+                    </Grid>
+                    <Grid sx={{width:"50%"}}>
+                    <Field
+                     as={TextField}
+                     margin="normal"
+                     fullWidth
+                     label="Confirm new password"
+                     name="confirmNewPassword"
+                     type="password"/>
+                    
+                      {errors.confirmNewPassword && touched.confirmNewPassword ? (
+                        <div style={{ color: "red" }}>{errors.confirmNewPassword}</div>
+                      ) : null}
+                    </Grid>
+                  <Grid sx={{width: "40%"}}>
+                    <Button
+                      disabled={!(isValid && dirty)}
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      sx={{ my:4}}
+                    >
+                      {isSubmitting ? "Loading" : "Update"}
+                    </Button>
+                  </Grid>
+                </Grid>
+                </Box>
+              )}
+            </Formik>
+          </Box>
+        </Container>
+  
+        <Container maxWidth={false}>
+          <CssBaseline />
+          <Box
+            sx={{
+              marginTop: 3,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              border: "#d32f2f 3px solid",
+              background: "white", 
+              borderRadius: "15px"
+            }}>
+              <Formik
+              initialValues={initialValues}
+              onSubmit={() => {}}>
+                <Box
+                  component="form"
+                  onSubmit={dangerZoneSubmit}
+                  noValidate
+                  sx={{m:"auto", width: "95%", mb:2}}
+                >
+                
+                <Grid
+                    sx={{display:"flex", justifyContent:"space-around", flexDirection:"column", alignItems:"center" }}
+                >
+                {user.role === "Administrators" && (
+                <Typography component="h1" variant="h5" sx={{my:3, color:"#d32f2f", fontWeight: "500"}}>
+                  Danger Zone
+                </Typography>
+              )}
+                {updateUser.isBlocked === false && 
+                    <Button
+                        onClick={(event)=>onBlockClick(event, updateUser.id)}
+                        fullWidth
+                        variant="contained"
+                        color="warning"
+                        sx={{ width:"45%"}}
+                    >
+                      Block
+                </Button>}
+                {updateUser.isBlocked === true && <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="warning"
+                      sx={{ width:"45%"}}
+                    >
+                      Unblock
+                </Button> }
+                  <Button
+                      type="submit"
+                      fullWidth
+                      variant="contained"
+                      color="error"
+                      sx={{ width:"45%", my:4}}
+                    >
+                      Delete
                 </Button>
-              </Box>
-            </Box>
-          </Card>
-        )}
-      </Formik>
-    </>
-  );
-};
+                </Grid> 
+                </Box>
+              </Formik>
+          </Box>
+        </Container>                 
+      </ThemeProvider>
+    );
+  return <></>
+}
 export default Profile;

@@ -6,6 +6,7 @@ import {
   Container,
   FormControl,
   InputLabel,
+  Link,
   MenuItem,
   Select,
   SelectChangeEvent,
@@ -20,11 +21,9 @@ import { Navigate } from "react-router-dom";
 const Register: React.FC = () => {
   const [role, setRole] = useState("Users");
   const { message } = useTypedSelector((store) => store.UserReducer);
-  const { IncertUser } = useActions();
+  const { InsertUser } = useActions();
 
-  console.log("message ", message);
-
-  if (message === "User successfully created.") {
+  if (message === "User was successfully created") {
     return <Navigate to="/" />;
   }
 
@@ -33,9 +32,7 @@ const Register: React.FC = () => {
     firstName: "",
     lastName: "",
     password: "",
-    phoneNumber: "",
     confirmPassword: "",
-
   };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -46,13 +43,11 @@ const Register: React.FC = () => {
       Name: data.get("firstName"),
       Surname: data.get("lastName"),
       Email: data.get("email"),
-      PhoneNumber: data.get("phone"),
       Role: role,
       Password: data.get("password"),
       confirmPassword: data.get("confirmPassword"),
-    
     };
-    IncertUser(newUser);
+    InsertUser(newUser);
   };
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -123,17 +118,6 @@ const Register: React.FC = () => {
                   type="email"
                   variant="outlined"
                 />
-
-                  <Field
-                  as={TextField}
-                  fullWidth
-                  label="Phone Number"
-                  margin="normal"
-                  name="phone"
-                  type="phone"
-                  variant="outlined"
-                />
-
                 <FormControl sx={{ width: "100%" }}>
                   <InputLabel>Role</InputLabel>
                   <Select
@@ -146,8 +130,6 @@ const Register: React.FC = () => {
                     <MenuItem value={"Administrators"}>Administrators</MenuItem>
                   </Select>
                 </FormControl>
-
-                
                 {errors.password && touched.password ? (
                   <div style={{ color: "red" }}>{errors.password}</div>
                 ) : null}

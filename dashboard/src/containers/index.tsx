@@ -10,14 +10,13 @@ import Typography from "@mui/material/Typography";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
 import MenuItem from "@mui/material/MenuItem";
 import { useTypedSelector } from "../hooks/useTypedSelector";
 import { useActions } from "../hooks/useActions";
 import { Button, Menu } from "@mui/material";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom";
 import { adminMenu, userMenu } from "./dashboardLayout/listItems";
 
 const drawerWidth = 240;
@@ -75,6 +74,8 @@ const DashboardLayout: React.FC = () => {
   const { user } = useTypedSelector((store) => store.UserReducer);
   const [anchorEl, setAnchorEl]: any = useState(null);
   const openProfileMenu = Boolean(anchorEl);
+  const navigate = useNavigate();
+
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -90,6 +91,19 @@ const DashboardLayout: React.FC = () => {
 
   const Logout = () => {
     LogOut(user.Id);
+    navigate("/");
+  };
+
+  const onProfileClick = (event: React.MouseEvent<unknown>, user:any ) => {
+      const model = {
+        id: user.Id,
+        name: user.Name,
+        surname:user.Surname,
+        email: user.Email,
+        phoneNumber: user.PhoneNumber
+      } 
+      window.localStorage.setItem('selectedUser', JSON.stringify(model));
+      navigate("profile");
   };
 
   return (
@@ -112,7 +126,6 @@ const DashboardLayout: React.FC = () => {
                 ...(open && { display: "none" }),
               }}
             >
-              <MenuIcon />
             </IconButton>
             <Typography
               component="h1"
@@ -143,7 +156,8 @@ const DashboardLayout: React.FC = () => {
                   "aria-labelledby": "basic-button",
                 }}
               >
-                <MenuItem>
+                <MenuItem 
+                onClick={(event) => onProfileClick(event, user)}>
                   <Link to="profile" style={{ textDecoration: "none" }}>
                     Profile
                   </Link>

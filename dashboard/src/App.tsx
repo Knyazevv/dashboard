@@ -2,20 +2,25 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./containers";
 import DefaultPage from "./pages/defaultPage";
-import Users from "./pages/users";
 import NotFound from "./pages/notFound";
-import SignIn from "./pages/auth/singIn";
 import SignUp from "./pages/auth/signUp";
 import { useTypedSelector } from "./hooks/useTypedSelector";
+
 import Profile from "./pages/profile";
-
+import Register from "./pages/auth/signUp";
+import Users from "./pages/users";
+import Courses from "./pages/courses";
+import SignIn from "./pages/auth/singIn";
+import ResetPassword from "./pages/resetPassword";
+import SendResetPasswordEmail from "./pages/resetPassword/index2";
 import ConfirmEmail from "./pages/confirmEmail";
-import EditUser from "./pages/editUser";
-import Course from "./pages/courses";
-import EditCourse from "./pages/editCourse";
-import CreateCourse from "./pages/createCourse";
 
 
+import AddCourse from "./pages/addCourse";
+import UpdateCourse from "./pages/updateCourse";
+import Categories from "./pages/categories";
+import AddCategory from "./pages/addCategory";
+import UpdateCategory from "./pages/updateCategory";
 
 
 const App: React.FC = () => {
@@ -27,28 +32,37 @@ const App: React.FC = () => {
           {user.role === "Administrators" && (
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<DefaultPage />} />
-              <Route path="users" element={<Users />} />
-              <Route path="sign-up" element={<SignUp />} />
+              <Route path="users" element={<Users />}/>
+              <Route path="users/updateUser" element={<Profile />} />
+              <Route path="signUp" element={<Register />} />
               <Route path="profile" element={<Profile />} />
-              <Route path="edituser" element={<EditUser />} />
-              <Route path="courses" element={<Course />} />
-              <Route path="editcourse" element={<EditCourse />} />
-              <Route path="createCourse" element={<CreateCourse />} />
+
+              <Route path="courses" element={<Courses />} />
+              <Route path="courses/add" element={<AddCourse />} />
+              <Route path="courses/update" element={<UpdateCourse />} />
+
+              <Route path="categories" element={<Categories />} />
+              <Route path="categories/add" element={<AddCategory />} />
+              <Route path="categories/update" element={<UpdateCategory />} />
+
             </Route>
           )}
           {user.role === "Users" && (
             <Route path="/dashboard" element={<DashboardLayout />}>
               <Route index element={<DefaultPage />} />
-              <Route path="users" element={<Users />} />
+              <Route path="users" element={<Users />}/>
               <Route path="profile" element={<Profile />} />
-              <Route path="courses" element={<Course />} />
+              <Route path="courses" element={<Courses />} />
+              <Route path="categories" element={<Categories />} />
             </Route>
           )}
         </>
       )}
       <Route path="/" element={<SignIn />} />
       <Route path="/dashboard/" element={<SignIn />} />
-      <Route path="/confirmEmail/" element={<ConfirmEmail />} />     
+      <Route path="/confirmEmail" element={<ConfirmEmail/>}/>
+      <Route path="/resetPassword" element={<ResetPassword/>}/>
+      <Route path="/sendResetEmail" element={<SendResetPasswordEmail/>}/>
       <Route path="*" element={<NotFound />} />
     </Routes>
   );

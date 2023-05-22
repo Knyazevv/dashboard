@@ -15,10 +15,6 @@ namespace Compass.Infrastructure.Context
     {
         public AppDbContext() : base() { }
         public AppDbContext(DbContextOptions options) : base(options) { }
-      
-
-
-       
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -31,15 +27,9 @@ namespace Compass.Infrastructure.Context
             builder.ApplyConfiguration(new CourseConfiguration());
         }
 
-
-
         public DbSet<AppUser> AppUser { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-
         public DbSet<Category> Category { get; set; }
         public DbSet<Course> Courses { get; set; }
-
-
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Compass.Core.DTO_s;
 using Compass.Core.Entities;
+using Compass.Core.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,10 @@ namespace Compass.Core.Interfaces
 {
     public interface ICategoryService
     {
-        Task<List<CategoryDto>> GetAll();
+        Task<List<Category>> GetAll();
+        Task<Category> GetById(object id);
+        Task<ServiceResponse> Create(CategoryDto model);
+        Task<ServiceResponse> Delete(int id);
+        Task<ServiceResponse> Update(CategoryDto model);
     }
 }

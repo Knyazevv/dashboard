@@ -8,7 +8,7 @@ namespace Compass.Core.DTO_s
 {
     public class ConfirmEmailDto
     {
-        public string Id { get; set; } = string.Empty;
-        public string Token { get; set; } = string.Empty;
+        public string Id { get; set; }
+        public string Token { get; set; }
     }
 }

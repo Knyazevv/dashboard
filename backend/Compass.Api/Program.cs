@@ -1,5 +1,4 @@
 using Compass.Core;
-using Compass.Core.Services;
 using Compass.Infrastructure;
 using Compass.Infrastructure.DbInitializers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -50,9 +49,6 @@ builder.Services.AddIdentity();
 builder.Services.AddCoreServices();
 // Add automapper
 builder.Services.AddAutoMapper();
-
-
-
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

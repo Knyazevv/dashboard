@@ -62,28 +62,6 @@ export const ChangePasswordSchema = Yup.object().shape({
     .oneOf([Yup.ref("currentPassword"), ""], "Passwords must match."),
 });
 
-
-
-
-export const ChangeProfilePasswordSchema = Yup.object().shape({
-  oldPassword: Yup.string()
-    .max(255)
-    .required("Old password is required")
-    .matches(passwordRegExp, "Password must contains A-Z, a-z, 0-9"),
-  newPassword: Yup.string()
-    .max(255)
-    .required("New password is required")
-    .matches(passwordRegExp, "Password must contains A-Z, a-z, 0-9"),
-  confirmPassword: Yup.string()
-    .max(255)
-    .required("Cobfirm password is required")
-    .matches(passwordRegExp, "Password must contains A-Z, a-z, 0-9")
-    .oneOf([Yup.ref("newPassword")], "Password must match."),
-});
-
-
-
-
 export const ChangeProfileSchema = Yup.object().shape({
   email: Yup.string()
     .email("Invalid email address")
@@ -91,16 +69,5 @@ export const ChangeProfileSchema = Yup.object().shape({
     .label("Email address"),
   name: Yup.string().required("Name is required").label("Name"),
   surname: Yup.string().required("Surname is required").label("Surname"),
-  phone: Yup.string().required("Phone is required").label("Phone"),
-});
-
-
-export const EditUserSchema = Yup.object().shape({
-  email: Yup.string()
-    .email("Invalid email address")
-    .required("Required")
-    .label("Email address"),
-  firstName: Yup.string().required("Name is required").label("Name"),
-  lastName: Yup.string().required("Surname is required").label("Surname"),
   phone: Yup.string().required("Phone is required").label("Phone"),
 });

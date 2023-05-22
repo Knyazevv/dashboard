@@ -1,13 +1,11 @@
 ﻿using Compass.Core.DTO_s;
-using Compass.Core.Services;
+using Compass.Core.Services.User;
 using Compass.Core.Validation.Token;
 using Compass.Core.Validation.User;
-using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 
 namespace Compass.Api.Controllers
 {
@@ -23,18 +21,17 @@ namespace Compass.Api.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> IncertAsync([FromBody] RegisterUserDto model)
+        public async Task<IActionResult> InsertAsync([FromBody] ResiterUserDto model)
         {
             var validator = new RegisterUserValidation();
             var validatinResult = await validator.ValidateAsync(model);
             if (validatinResult.IsValid)
             {
-                var result = await _userService.IncertAsync(model);
+                var result = await _userService.InsertAsync(model);
                 return Ok(result);
             }
             return BadRequest(validatinResult.Errors);
         }
-
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync([FromBody] LoginUserDto model)
@@ -47,29 +44,23 @@ namespace Compass.Api.Controllers
                 return Ok(result);
             }
             return BadRequest(validatinResult.Errors);
+
         }
 
-        [HttpGet("logout")]
-        public async Task<IActionResult> LogoutAsync(string userId)
+        [HttpGet("users")]
+        public async Task<IActionResult> GetAllAsync()
         {
-            var result = await _userService.LogoutAsync(userId);
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
+            var result = await _userService.GetAllAsync();
+            return Ok(result);
         }
-
-
-
 
         [AllowAnonymous]
         [HttpPost("RefreshToken")]
         public async Task<IActionResult> RefreshToken([FromBody] TokenRequestDto model)
         {
             var validator = new TokenRequestValidation();
-            var validatinResult = await validator.ValidateAsync(model);
-            if (validatinResult.IsValid)
+            var validationResult = await validator.ValidateAsync(model);
+            if (validationResult.IsValid)
             {
                 var result = await _userService.RefreshTokenAsync(model);
                 if (result.Success)
@@ -80,90 +71,42 @@ namespace Compass.Api.Controllers
             }
             else
             {
-                return BadRequest(validatinResult.Errors);
+                return BadRequest(validationResult.Errors);
             }
         }
 
-        [HttpGet("getall")]
-        public async Task<IActionResult> GetAll()
+        [HttpGet("logout")]
+        public async Task<IActionResult> LogOutAsync(string userId)
         {
-            var result = await _userService.GetAllUsersAsync();
+            var result = await _userService.LogOutAsync(userId);
             if (result.Success)
             {
-
                 return Ok(result);
             }
             return BadRequest(result);
-
         }
-
-
 
         [HttpPost("update")]
-        public async Task<IActionResult> UpdateUserAsync([FromBody] UpdateUserDto model)
+        public async Task<IActionResult> UpdateProfileAsync([FromBody] UpdateProfileDto model)
         {
-            var validator = new UpdateUserValidation();
-            var validatinResult = await validator.ValidateAsync(model);
-            if (validatinResult.IsValid)
+            var validator = new UpdateProfileValidation();
+            var validationresult = await validator.ValidateAsync(model);
+            if (validationresult.IsValid)
             {
-                var result = await _userService.UpdateUserAsync(model);
-
+                var result = await _userService.UpdateProfileAsync(model);
                 if (result.Success)
                 {
                     return Ok(result);
                 }
                 return BadRequest(result);
             }
-            return BadRequest(validatinResult.Errors);
+            return BadRequest(validationresult);
         }
 
-
-
-
-        [HttpPost("editUser")]
-        public async Task<IActionResult> EditUserAsync([FromBody] EditUserDto model)
+        [HttpGet("delete")]
+        public async Task<IActionResult> DeleteAsync(string userId)
         {
-            var validator = new EditUserValidation();
-            var validatinResult = await validator.ValidateAsync(model);
-            if (validatinResult.IsValid)
-            {
-                var result = await _userService.EditUserAsync(model);
-
-                if (result.Success)
-                {
-                    return Ok(result);
-                }
-                return BadRequest(result);
-            }
-            return BadRequest(validatinResult.Errors);
-        }
-
-
-
-        [HttpPost("changePassword")]
-        public async Task<IActionResult> ChangePasswordAsync([FromBody] ChangePasswordDto model)
-        {
-            var validator = new ChangePasswordValidation();
-            var validatinResult = await validator.ValidateAsync(model);
-            if (validatinResult.IsValid)
-            {
-                var result = await _userService.ChangePasswordAsync(model);
-
-                if (result.Success)
-                {
-                    return Ok(result);
-                }
-                return BadRequest(result);
-            }
-            return BadRequest(validatinResult.Errors);
-        }
-
-
-        [HttpPost("deleteUser")]
-        public async Task<IActionResult> DeleteUserAsync([FromBody] string email)
-        {
-            var result = await _userService.DeleteUserAsync(email);
-
+            var result = await _userService.DeleteAsync(userId);
             if (result.Success)
             {
                 return Ok(result);
@@ -171,39 +114,40 @@ namespace Compass.Api.Controllers
             return BadRequest(result);
         }
 
-
-
-        [HttpGet("profile")]
-        public async Task<IActionResult> GetProfileAsync(string userId)
+        [AllowAnonymous]
+        [HttpPost("resetPassword")]
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordDto model)
         {
-            var result = await _userService.GetUserProfileAsync(userId);
+            var validator = new ResetPasswordValidation();
+            var validationResult = validator.Validate(model);
 
+            if (validationResult.IsValid)
+            {
+                var result = await _userService.ResetPasswordAsync(model);
+                if (result.Success)
+                {
+                    return Ok(result);
+                }
+                return BadRequest(result);
+            }
+            return BadRequest(validationResult);
+        }
+
+        [AllowAnonymous]
+        [HttpGet("sendResetEmail")]
+        public async Task<IActionResult> SendResetEmailAsync(string email)
+        {
+            var result = await _userService.SendResetEmailAsync(email);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
         }
-
-
-        [HttpPost("users")]
-        public async Task<IActionResult> GetUsersAsync()
-        {
-            var result = await _userService.GetAllUsersAsync();
-
-            if (result.Success)
-            {
-                return Ok(result);
-            }
-            return BadRequest(result);
-        }
-
-
-
 
 
         [AllowAnonymous]
-        [HttpPost("ConfirmEmail")]
+        [HttpPost("сonfirmEmail")]
         public async Task<IActionResult> ConfirmEmailAsync([FromBody] ConfirmEmailDto model)
         {
             if (string.IsNullOrWhiteSpace(model.Id) || string.IsNullOrWhiteSpace(model.Token))
@@ -219,24 +163,15 @@ namespace Compass.Api.Controllers
         }
 
 
-
-        [HttpPost("blockUser")]
-        public async Task<IActionResult> BlockUserAsync([FromBody] string email)
+        [HttpGet("blockUnblock")]
+        public async Task<IActionResult> BlockUnblockAsync(string userId)
         {
-            var result = await _userService.BlockUserAsync(email);
-
+            var result = await _userService.BlockUnblockAsync(userId);
             if (result.Success)
             {
                 return Ok(result);
             }
             return BadRequest(result);
         }
-
-
-
-
-
-
-
     }
 }

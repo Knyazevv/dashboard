@@ -6,25 +6,15 @@ const initialState: UserState = {
   message: "",
   isAuth: false,
   user: {},
-  profile: {},
   selectedUser: null,
 };
 const UserReducer = (state = initialState, action: UserActions): UserState => {
   console.log("UserReducer", action);
-
-
   switch (action.type) {
     case UserActionType.START_REQUEST:
       return { ...state, loading: true };
-
-
     case UserActionType.ALL_USERS_LOADED:
-      return { ...state, loading: false, allUsers: action.payload.payload };
-
-
-      
-      case UserActionType.USER_PROFILE_LOADED:
-        return { ...state, loading: false, profile: action.payload, message: "" };
+      return { ...state, loading: false, allUsers: action.payload };
     case UserActionType.FINISH_REQUEST:
       return { ...state, loading: false, message: action.payload };
     case UserActionType.LOGIN_USER_SUCCESS:
@@ -42,8 +32,11 @@ const UserReducer = (state = initialState, action: UserActions): UserState => {
         message: "",
         isAuth: false,
         user: {},
-        profile: {},
         selectedUser: null,
+      };
+      case UserActionType.SELECTED_USER:
+      return {
+        ...state, loading:false, message:action.payload.message, selectedUser:action.payload, isAuth: true
       };
     default:
       return state;

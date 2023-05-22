@@ -82,6 +82,10 @@ export function setRefreshToken(token: string) {
   window.localStorage.setItem("refreshToken", token);
 }
 
+export function setSelectedUser(user: any) {
+  window.localStorage.setItem("selectedUser", user);
+}
+
 export function getAccessToken(): null | string {
   const accessToken = window.localStorage.getItem("accessToken");
   return accessToken;
@@ -92,9 +96,18 @@ export function getrefreshToken(): null | string {
   return refreshToken;
 }
 
+export function getSelectedUser(): null | any {
+  const selectedUserId = window.localStorage.getItem("selectedUser");
+  return selectedUserId;
+}
+
 export function removeTokens() {
   window.localStorage.removeItem("accessToken");
   window.localStorage.removeItem("refreshToken");
+}
+export function removeSelectedUserId()
+{
+  window.localStorage.removeItem("selectedUserId");
 }
 
 const responseBody: any = (response: any) => response.data;
@@ -106,22 +119,20 @@ const request = {
 };
 
 const User = {
-  Incert: (user: any) => request.post("/register", user),
+  Insert: (user: any) => request.post("/register", user),
   Login: (user: any) => request.post("/login", user),
   Logout: (id: string) => request.get("/logout?userId=" + id),
-  GetAll: () => request.get("/getall"),
-  ChangePassword: (user: any) => request.post(`/changePassword`, user),
-  UpdateProfile: (user: any) => request.post(`/update`, user),
-  Block: (email: string) => request.post("/blockUser", email),
-  Edit: (user: any) => request.post("/edituser", user),
-  Delete: (email: string) => request.post("/deleteUser", email),
-  GetProfile: (id: string) => request.get("/profile?userId=" + id),
-  Confirm: (emailData: any) => request.post("/confirmemail", emailData),
-  GetUsers: () => request.post("/users"),
+  GetAll: () => request.get("/users"),
+  UpdateProfile: (model: any) => request.post("/update", model),
+  Delete: (id: string) => request.get("/delete?userId=" + id),
+  ConfirmEmail: (confirmData: any) => request.post("/сonfirmEmail", confirmData),
+  BlockUnblock: (id: string) => request.get("/blockUnblock?userId=" + id),
+  ResetPassword: (resetData: any) => request.post("/resetPassword", resetData),
+  SendResetEmail: (email: string) => request.get("/sendResetEmail?email="+ email),
 };
 
-export async function Incert(user: any) {
-  const data = await User.Incert(user)
+export async function Insert(user: any) {
+  const data = await User.Insert(user)
     .then((response) => {
       return { response };
     })
@@ -130,49 +141,6 @@ export async function Incert(user: any) {
     });
   return data;
 }
-
-
-export async function Block(email: string) {
-  const data = await User.Block(email)
-    .then((response) => {
-      return { response };
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  return data;
-}
-
-export async function Confirm(emailData: any) {
-  const data = await User.Confirm(emailData)
-    .then((response) => {
-      console.log(response);
-      return { response };
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  return data;
-}
-
-
-export async function GetUsers() {
-  const data = await User.GetUsers()
-    .then((response) => {
-      return { response };
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  return data;
-}
-
-
-
-
-
-
-
 
 export async function Login(user: any) {
   const data = await User.Login(user)
@@ -196,82 +164,93 @@ export async function Logout(id: string) {
   return data;
 }
 
+export async function GetAll()
+{
+    removeSelectedUserId();
+    const data = await User.GetAll()
+    .then((response) => {
+      return { response};
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  console.log("In service ", data);
+  return data;
+}
 
-export async function GetAll() {
-  const data = await User.GetAll()
+export async function UpdateProfileAsync(model: any)
+{
+    const data = await User.UpdateProfile(model)
+    .then((response) => {
+      return { response};
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  console.log("In service ", data);
+  return data;
+}
+
+export async function DeleteAsync(id:string)
+{
+    const data = await User.Delete(id)
+    .then((response) => {
+      return { response};
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  console.log("In service ", data);
+  return data;
+}
+
+export async function BlockUnblockAsync(id:string)
+{
+   
+    const data = await User.BlockUnblock(id)
+    .then((response) => {
+      return { response};
+    })
+    .catch((error) => {
+      return error.response;
+    });
+  console.log("In service ", data);
+  return data;
+}
+
+export async function ConfirmEmailAsync(confirmData:any) {
+  const data = await User.ConfirmEmail(confirmData)
   .then((response) => {
-    return { response };
+    return { response};
   })
   .catch((error) => {
     return error.response;
   });
-return data;
-}
-
-
-export async function changePassword(user: any) {
-  const data = await User.ChangePassword(user)
-    .then((response) => {
-      return {
-        response,
-      };
-    })
-    .catch((error) => {
-      return error.response;
-    });
+  console.log("In service ", data);
   return data;
 }
 
-export async function updateProfile(user: any) {
-  const data = await User.UpdateProfile(user)
-    .then((response) => {
-      return {
-        response,
-      };
-    })
-    .catch((error) => {
-      return error.response;
-    });
+export async function ResetPasswordAsync(resetData: any) {
+  const data = await User.ResetPassword(resetData)
+  .then((response) => {
+    return { response};
+  })
+  .catch((error) => {
+    return error.response;
+  });
+  console.log("In service ", data);
   return data;
 }
 
-
-export async function Edit(user: any) {
-  const data = await User.Edit(user)
-    .then((response) => {
-      return { response };
-    })
-    .catch((error) => {
-      return error.response;
-    });
+export async function SendResetEmailAsync(email: any) {
+  const data = await User.SendResetEmail(email)
+  .then((response) => {
+    return { response};
+  })
+  .catch((error) => {
+    return error.response;
+  });
+  console.log("In service ", data);
   return data;
 }
-
-
-export async function Delete(email: string) {
-  const data = await User.Delete(email)
-    .then((response) => {
-      return { response };
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  return data;
-}
-
-
-export async function GetProfile(id: string) {
-  const data = await User.GetProfile(id)
-    .then((response) => {
-      return { response };
-    })
-    .catch((error) => {
-      return error.response;
-    });
-  return data;
-}
-
-
-
-
 

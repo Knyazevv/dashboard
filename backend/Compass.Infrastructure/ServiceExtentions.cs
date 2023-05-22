@@ -1,6 +1,5 @@
 ﻿using Compass.Core.Entities;
 using Compass.Core.Interfaces;
-using Compass.Core.Services;
 using Compass.Infrastructure.Context;
 using Compass.Infrastructure.Repository;
 using Microsoft.AspNetCore.Identity;
@@ -47,14 +46,5 @@ namespace Compass.Infrastructure
         {
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         }
-
-
-
-
-
-
-
-
-
     }
 }

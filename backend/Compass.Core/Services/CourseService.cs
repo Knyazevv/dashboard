@@ -14,38 +14,21 @@ namespace Compass.Core.Services
 {
     public class CourseService : ICourseService
     {
-        private readonly IRepository<Course> _courseRepo;
+        private readonly IRepository<Course> _courseRepository;
         private readonly IMapper _mapper;
 
         public CourseService(IRepository<Course> courseRepo, IMapper mapper)
         {
-            _courseRepo = courseRepo;
+            _courseRepository = courseRepo;
             _mapper = mapper;
         }
-
-        public async Task Create(CourseDto course)
-        {
-            await _courseRepo.Insert(_mapper.Map<Course>(course));
-            await _courseRepo.Save();
-        }
-
-        public async Task Delete(int id)
-        {
-            var course = await _courseRepo.GetByID(id);
-            if (course != null)
-            {
-                await _courseRepo.Delete(id);
-                await _courseRepo.Save();
-            }
-        }
-
         public async Task<ServiceResponse> GetAll()
         {
-            var result = await _courseRepo.GetListBySpec(new Courses.GetAll());
+            var result = await _courseRepository.GetListBySpec(new Courses.GetAll());
             var data = _mapper.Map<List<CourseDto>>(result);
             return new ServiceResponse
             {
-                Message = "All courses loaded.",
+                Message = "All courses loaded were loaded",
                 Success = true,
                 Payload = data
             };
@@ -55,21 +38,59 @@ namespace Compass.Core.Services
         {
             if (id < 0)
                 return null;
-            var course = await _courseRepo.GetByID(id);
+            var course = await _courseRepository.GetByID(id);
             return _mapper.Map<CourseDto>(course);
         }
 
 
         public async Task<List<CourseDto>> GetByCategory(int id)
         {
-            var result = await _courseRepo.GetListBySpec(new Courses.ByCategory(id));
+            var result = await _courseRepository.GetListBySpec(new Courses.ByCategory(id));
             return _mapper.Map<List<CourseDto>>(result);
         }
 
-        public async Task Update(UpdateCourseDto course)
+        public async Task<ServiceResponse> Create(CourseDto model)
         {
-            await _courseRepo.Update(_mapper.Map<Course>(course));
-            await _courseRepo.Save();
+            var spec = await _courseRepository.GetListBySpec(new Courses.GetByTitle(model.Title));
+            if (spec.Count() == 0)
+            {
+                await _courseRepository.Insert(_mapper.Map<Course>(model));
+                await _courseRepository.Save();
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "A course was successfully created"
+                };
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = false,
+                    Message = "This course already exists"
+                };
+            }
+        }
+        public async Task<ServiceResponse> Delete(int id)
+        {
+            Course course = await _courseRepository.GetByID(id);
+            await _courseRepository.Delete(course);
+            await _courseRepository.Save();
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "The course was deleted"
+            };
+        }
+        public async Task<ServiceResponse> Update(CourseDto model)
+        {
+            await _courseRepository.Update(_mapper.Map<Course>(model));
+            await _courseRepository.Save();
+            return new ServiceResponse
+            {
+                Success = true,
+                Message = "The course was successfully updated"
+            };
         }
     }
 }

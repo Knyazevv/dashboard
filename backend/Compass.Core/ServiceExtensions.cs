@@ -1,6 +1,7 @@
 ﻿using Compass.Core.AutoMapper;
 using Compass.Core.Interfaces;
 using Compass.Core.Services;
+using Compass.Core.Services.User;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -19,16 +20,14 @@ namespace Compass.Core
 
             // Jwt Service
             services.AddTransient<JwtService>();
-
-            // Add email service
+            
+            // Email Service
             services.AddTransient<EmailService>();
-
-            // Add response service
-            services.AddTransient<ServiceResponse>();
-
 
             // Category service
             services.AddTransient<ICategoryService, CategoryService>();
+            
+            // Course service
             services.AddTransient<ICourseService, CourseService>();
         }
 
@@ -36,6 +35,8 @@ namespace Compass.Core
         public static void AddAutoMapper(this IServiceCollection services)
         {
             services.AddAutoMapper(typeof(AutoMapperUserProfile));
+            services.AddAutoMapper(typeof(AutoMapperCategoryAndProductProfile));
+            services.AddAutoMapper(typeof(AutoMapperCourseProfile));
         }
     }
 }

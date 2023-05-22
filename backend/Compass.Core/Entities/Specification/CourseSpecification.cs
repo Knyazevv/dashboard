@@ -9,7 +9,7 @@ namespace Compass.Core.Entities.Specification
 {
     public static class Courses
     {
-        public class GetAll : Specification<Course>
+        public class GetAll: Specification<Course>
         {
             public GetAll()
             {
@@ -26,8 +26,13 @@ namespace Compass.Core.Entities.Specification
                     .Where(c => c.CategoryId == categoryId);
             }
         }
-
-
-
+        public class GetByTitle : Specification<Course>
+        {
+            public GetByTitle(string title)
+            {
+                Query
+                    .Where(c => c.Title == title);
+            }
+        }
     }
 }

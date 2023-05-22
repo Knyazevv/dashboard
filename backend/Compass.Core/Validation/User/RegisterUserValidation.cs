@@ -8,17 +8,16 @@ using System.Threading.Tasks;
 
 namespace Compass.Core.Validation.User
 {
-    public class RegisterUserValidation : AbstractValidator<RegisterUserDto>
+    public class RegisterUserValidation : AbstractValidator<ResiterUserDto>
     {
         public RegisterUserValidation()
         {
             RuleFor(r => r.Name).NotEmpty();
             RuleFor(r => r.Surname).NotEmpty();
             RuleFor(r => r.Email).NotEmpty().EmailAddress();
-            RuleFor(r => r.PhoneNumber).NotEmpty();
             RuleFor(r => r.Password).NotEmpty().MinimumLength(6);
             RuleFor(r => r.ConfirmPassword).NotEmpty().MinimumLength(6);
-            RuleFor(r => r.ConfirmPassword).Equal(x => x.Password);        
+            RuleFor(r => r.ConfirmPassword).Equal(x => x.Password);
             RuleFor(r => r.Role).NotEmpty();
         }
     }

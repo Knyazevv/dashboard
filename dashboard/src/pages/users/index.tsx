@@ -1,3 +1,4 @@
+import { useTypedSelector } from "../../hooks/useTypedSelector";
 import { alpha } from "@mui/material/styles";
 import React, { useEffect } from "react";
 import Box from "@mui/material/Box";
@@ -13,14 +14,15 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
+import IconButton from "@mui/material/IconButton";
+import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { visuallyHidden } from "@mui/utils";
 import { useActions } from "../../hooks/useActions";
-import { useTypedSelector } from "../../hooks/useTypedSelector";
-import Button from "@mui/material/Button";
+import { Button, Link } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
-
 
 interface Data {
   id: number;
@@ -29,27 +31,8 @@ interface Data {
   email: string;
   phoneNumber: string;
   role: string;
-  isBlocked: boolean;
-}
-
-function createData(
-  id: number,
-  name: string,
-  surname: string,
-  email: string,
-  phoneNumber: string,
-  role: string,
-  isBlocked: boolean
-): Data {
-  return {
-    id,
-    name,
-    surname,
-    email,
-    phoneNumber,
-    role,
-    isBlocked,
-  };
+  action: string;
+  isBlocked: string;
 }
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
@@ -99,6 +82,12 @@ interface HeadCell {
 }
 
 const headCells: readonly HeadCell[] = [
+  // {
+  //   id: "id",
+  //   numeric: false,
+  //   disablePadding: true,
+  //   label: "Id",
+  // },
   {
     id: "name",
     numeric: true,
@@ -121,19 +110,13 @@ const headCells: readonly HeadCell[] = [
     id: "phoneNumber",
     numeric: true,
     disablePadding: false,
-    label: "Phone Number",
+    label: "Phone number",
   },
   {
     id: "role",
     numeric: true,
     disablePadding: false,
     label: "Role",
-  },
-  {
-    id: "isBlocked",
-    numeric: true,
-    disablePadding: false,
-    label: "Is Blocked",
   },
 ];
 
@@ -147,6 +130,7 @@ interface EnhancedTableProps {
   order: Order;
   orderBy: string;
   rowCount: number;
+  user: any;
 }
 
 function EnhancedTableHead(props: EnhancedTableProps) {
@@ -156,14 +140,14 @@ function EnhancedTableHead(props: EnhancedTableProps) {
     orderBy,
     numSelected,
     rowCount,
+    user,
     onRequestSort,
   } = props;
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
-    
-  const { user } = useTypedSelector((store) => store.UserReducer);
+
   return (
     <TableHead>
       <TableRow>
@@ -173,15 +157,12 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             indeterminate={numSelected > 0 && numSelected < rowCount}
             checked={rowCount > 0 && numSelected === rowCount}
             onChange={onSelectAllClick}
-            inputProps={{
-              "aria-label": "select all desserts",
-            }}
           />
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? "right" : "left"}
+            align={headCell.numeric ? "left" : "left"}
             padding={headCell.disablePadding ? "none" : "normal"}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -199,11 +180,12 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             </TableSortLabel>
           </TableCell>
         ))}
-        {user.role === "Administrators" ? (
-          <TableCell align="right">
-            <Box>Edit</Box>
-          </TableCell>
-        ) : null}
+        {user.role === "Administrators" && (
+          <TableCell key={"isBlocked"}>Is Blocked</TableCell>
+        )}
+        {user.role === "Administrators" && (
+          <TableCell key={"action"}>Action</TableCell>
+        )}
       </TableRow>
     </TableHead>
   );
@@ -211,28 +193,19 @@ function EnhancedTableHead(props: EnhancedTableProps) {
 
 interface EnhancedTableToolbarProps {
   numSelected: number;
+  user: any;
 }
 
 function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
   const { numSelected } = props;
-  const { user } = useTypedSelector((store) => store.UserReducer); 
 
-  const [redirect, setRedirect] = React.useState<boolean>(false);
-
-  const onClick = () => {  
-    setRedirect(true);
-  };
-  if (redirect) {
-    return <Navigate to="/dashboard/sign-up/" />;
-  }
-
- 
   return (
-    
     <Toolbar
       sx={{
         pl: { sm: 2 },
         pr: { xs: 1, sm: 1 },
+        display: "flex",
+        justifyContent: "space-around",
         ...(numSelected > 0 && {
           bgcolor: (theme) =>
             alpha(
@@ -252,40 +225,12 @@ function EnhancedTableToolbar(props: EnhancedTableToolbarProps) {
           {numSelected} selected
         </Typography>
       ) : (
-        <Typography
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          
+        <Typography sx={{ mt: 3 }} variant="h4" id="tableTitle" component="div">
+          Users
         </Typography>
       )}
-       
-       {user.role === "Administrators" ? (
-        <Typography
-        
-          sx={{ flex: "1 14 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-         <Button variant="contained"
-         onClick={() => onClick()} >
-        New user
-         </Button>
-         </Typography>
-         ) : null}
-         </Toolbar>
+    </Toolbar>
   );
-
-
-
-
-
-
-
-
 }
 
 const Users: React.FC = () => {
@@ -295,23 +240,14 @@ const Users: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [redirect, setRedirect] = React.useState<boolean>(false);
 
+  const { allUsers } = useTypedSelector((state) => state.UserReducer);
+  const { user } = useTypedSelector((state) => state.UserReducer);
 
   const { GetAllUsers } = useActions();
-  const { allUsers } = useTypedSelector((store) => store.UserReducer);
-  const navigate = useNavigate();
-  const { user } = useTypedSelector((store) => store.UserReducer);
-  const { selectedUser } = useTypedSelector((store) => store.UserReducer);
-
-  
-
-
-
   useEffect(() => {
     GetAllUsers();
   }, []);
-
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
@@ -324,7 +260,7 @@ const Users: React.FC = () => {
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = allUsers.map((n: any) => n.email);
+      const newSelected = allUsers.map((n: any) => n.name);
       setSelected(newSelected);
       return;
     }
@@ -366,24 +302,36 @@ const Users: React.FC = () => {
     setDense(event.target.checked);
   };
 
-  const handleEditClick = (row: any) => {
-    localStorage.setItem("updateUser", JSON.stringify(row));
-    navigate("/dashboard/editUser/");
-  };
-
-
-
   const isSelected = (name: any) => selected.indexOf(name) !== -1;
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - allUsers.length) : 0;
 
+  const navigate = useNavigate();
+
+  const onEditClick = (event: React.MouseEvent<unknown>, row: any) => {
+    window.localStorage.setItem("selectedUser", JSON.stringify(row));
+    navigate("updateUser");
+  };
+
+  const onAddClick = (event: React.MouseEvent<unknown>) => {
+    console.log("add");
+    navigate("/dashboard/signUp");
+  };
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "100%", mb: 2 }}>
-        <EnhancedTableToolbar numSelected={selected.length} />
+        <EnhancedTableToolbar numSelected={selected.length} user={user} />
         <TableContainer>
+          {user.role === "Administrators" && (
+            <Button
+              onClick={onAddClick}
+              variant="contained"
+              sx={{ width: "98%", m: "auto", display: "flex", mt: 4, mb: 3 }}
+            >
+              Add new user
+            </Button>
+          )}
           <Table
             sx={{ minWidth: 750 }}
             aria-labelledby="tableTitle"
@@ -396,6 +344,7 @@ const Users: React.FC = () => {
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
               rowCount={allUsers.length}
+              user={user}
             />
             <TableBody>
               {stableSort(allUsers, getComparator(order, orderBy))
@@ -423,24 +372,26 @@ const Users: React.FC = () => {
                           }}
                         />
                       </TableCell>
-                      <TableCell align="right">{row.name}</TableCell>
-                      <TableCell align="right">{row.surname}</TableCell>
-                      <TableCell align="right">{row.email}</TableCell>
-                      <TableCell align="right">{row.phoneNumber}</TableCell>
-                      <TableCell align="right">{row.role}</TableCell>
-                      <TableCell align="right">
-                        {row.isBlocked ? "Yes" : "No"}
-                      </TableCell>
-                      {user.role === "Administrators" ? (
-                        <TableCell align="right">
+                      <TableCell align="left">{row.name}</TableCell>
+                      <TableCell align="left">{row.surname}</TableCell>
+                      <TableCell align="left">{row.email}</TableCell>
+                      <TableCell align="left">{row.phoneNumber}</TableCell>
+                      <TableCell align="left">{row.role}</TableCell>
+                      {user.role === "Administrators" && (
+                        <TableCell align="left">
+                          {row.isBlocked ? "Yes" : "No"}
+                        </TableCell>
+                      )}
+                      <TableCell align="left">
+                        {user.role === "Administrators" && (
                           <Button
+                            onClick={(event) => onEditClick(event, row)}
                             variant="outlined"
-                            onClick={() => handleEditClick(row)}
                           >
                             Edit
                           </Button>
-                        </TableCell>
-                      ) : null}
+                        )}
+                      </TableCell>
                     </TableRow>
                   );
                 })}

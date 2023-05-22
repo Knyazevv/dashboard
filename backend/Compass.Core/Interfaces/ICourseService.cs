@@ -13,9 +13,10 @@ namespace Compass.Core.Interfaces
     {
         Task<ServiceResponse> GetAll();
         Task<CourseDto?> Get(int id);
-        Task Create(CourseDto course);
-        Task Update(UpdateCourseDto course);
-        Task Delete(int id);
         Task<List<CourseDto>> GetByCategory(int id);
+
+        Task<ServiceResponse> Create(CourseDto model);
+        Task<ServiceResponse> Delete(int id);
+        Task<ServiceResponse> Update(CourseDto model);
     }
 }
