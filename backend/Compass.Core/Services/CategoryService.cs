@@ -15,10 +15,12 @@ namespace Compass.Core.Services
     {
         private readonly IRepository<Category> _categoryRepository;
         private readonly IMapper _mapper;
-        public CategoryService(IRepository<Category> categoryRepository, IMapper mapper)
+        private readonly IRepository<Course> _courseRepository;
+        public CategoryService(IRepository<Category> categoryRepository, IRepository<Course> courseRepository, IMapper mapper)
         {
             _categoryRepository = categoryRepository;
             _mapper = mapper;
+            _courseRepository = courseRepository;
         }
 
         public async Task<List<Category>> GetAll()
@@ -56,14 +58,37 @@ namespace Compass.Core.Services
         }
         public async Task<ServiceResponse> Delete(int id)
         {
-            Category category = await _categoryRepository.GetByID(id);
-            await _categoryRepository.Delete(category);
-            await _categoryRepository.Save();
-            return new ServiceResponse
+            Course course = await _courseRepository.GetByID(id);
+            if (course == null)
             {
-                Success = true,
-                Message = "The category was successfully deleted"
-            };
+                Category category = await _categoryRepository.GetByID(id);
+                if (category != null)
+                {
+                    await _categoryRepository.Delete(category);
+                    await _categoryRepository.Save();
+                    return new ServiceResponse
+                    {
+                        Success = true,
+                        Message = "The category was successfully deleted"
+                    };
+                }
+                else
+                {
+                    return new ServiceResponse
+                    {
+                        Success = false,
+                        Message = "The category with the specified ID was not found"
+                    };
+                }
+            }
+            else
+            {
+                return new ServiceResponse
+                {
+                    Success = true,
+                    Message = "Cannot delete. Course exists with the specified ID"
+                };
+            }
         }
         public async Task<ServiceResponse> Update(CategoryDto model)
         {

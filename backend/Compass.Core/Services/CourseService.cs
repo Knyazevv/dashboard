@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using Ardalis.Specification;
+using AutoMapper;
 using Compass.Core.DTO_s;
 using Compass.Core.Entities;
 using Compass.Core.Entities.Specification;
@@ -9,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Compass.Core.Services
 {
@@ -92,5 +94,16 @@ namespace Compass.Core.Services
                 Message = "The course was successfully updated"
             };
         }
+
+
+        public class GetByCategoryId : Specification<Course>
+        {
+            public GetByCategoryId(int categoryId)
+            {
+                Query.Where(x => x.CategoryId == categoryId).Include(x => x.Category);
+            }
+        }
+
+
     }
 }
