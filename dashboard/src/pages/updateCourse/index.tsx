@@ -17,6 +17,7 @@ const theme = createTheme();
 
 const UpdateCourse: React.FC = () => {
   
+  const { message } = useTypedSelector((store) => store.CategoryReducer);
   
   const {DeleteCourse, UpdateCourse} = useActions();
   const { GetAllCategories } = useActions();

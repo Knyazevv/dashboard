@@ -14,14 +14,11 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Paper from "@mui/material/Paper";
 import Checkbox from "@mui/material/Checkbox";
-import IconButton from "@mui/material/IconButton";
-import Tooltip from "@mui/material/Tooltip";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Switch from "@mui/material/Switch";
-import DeleteIcon from "@mui/icons-material/Delete";
 import { visuallyHidden } from "@mui/utils";
 import { useActions } from "../../hooks/useActions";
-import { Button, Link } from "@mui/material";
+import { Button } from "@mui/material";
 import { Navigate, useNavigate } from "react-router-dom";
 
 interface Data {
@@ -236,6 +233,9 @@ const Courses: React.FC = () => {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+  const { message } = useTypedSelector((store) => store.CategoryReducer);
+
 
   const { allCourses } = useTypedSelector((state) => state.CourseReducer);
   const { user } = useTypedSelector((state) => state.UserReducer);
